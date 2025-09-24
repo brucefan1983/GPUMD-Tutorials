@@ -10,3 +10,8 @@ Example:
 <p align="center"><img src="https://raw.githubusercontent.com/Tingliangstu/Phonon-Vibration-Viewer/main/figure/ovito2.png" alt="ovito2" width="450"></p>
 
 
+### Author: _[Ting Liang](https://scholar.google.com/citations?hl=zh-CN&user=4ei1O30AAAAJ)_
+
+Department of Electronic Engineering, The Chinese University of Hong Kong, Hong Kong SAR, China.
+
+Email: liangting.zj@gmail.com
