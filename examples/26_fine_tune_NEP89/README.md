@@ -2,9 +2,9 @@
 
 In this tutorial, we provide a step-by-step guide on using the [NEP89](https://github.com/brucefan1983/GPUMD/blob/master/potentials/nep/nep89_20250409/nep89_20250409.txt) foundation model for property calculations and fine-tuning. 
 Here, we focus on calculating the thermal conductivity of monolayer MoS₂ as an example, demonstrating how to fine-tune NEP89 to achieve accurate physical properties when out-of-the-box predictions are insufficient. 
-The results of this process are illustrated in the figure below:
+he fine-tuning results for the thermal conductivity of MoS₂ are presented below. We also strongly encourage readers to reproduce the examples from the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286), both in their out-of-the-box and fine-tuned applications.
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="450">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="600">
 
 
 ## Introduction
