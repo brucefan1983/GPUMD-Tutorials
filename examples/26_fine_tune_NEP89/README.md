@@ -123,7 +123,7 @@ min_distance = 0.00082
 get_selected_frames("movie.xyz", calc, min_distance)
 ```
 
-The parameter min_distance defines the distance threshold for selecting configurations, and tuning this value allows users to control the number of sampled frames.
+The parameter `min_distance` defines the distance threshold for selecting configurations, and tuning this value allows users to control the number of sampled frames.
 
 ## 5. Single-point calculation of DFT
 
@@ -161,7 +161,7 @@ The choice of **INCAR parameters** requires users to carefully study the [VASP m
 The quality of the single-point calculations is **crucial** for dataset preparation.
 
 In our fine-tuning dataset, we included **[`IVDW = 12`](https://www.vasp.at/wiki/DFT-D3)**.  
-For systems requiring long-range dispersion corrections, users may alternatively **[`IVDW = 12`](https://www.vasp.at/wiki/DFT-D3)** during the single-point DFT step and instead adopt the [NEP+D3 strategy](https://iopscience.iop.org/article/10.1088/1361-648X/ad1278) during MD simulations.
+For systems requiring long-range dispersion corrections, users may alternatively disable the **[`IVDW = 12`](https://www.vasp.at/wiki/DFT-D3)** during the single-point DFT stage and adopt the [NEP+D3 strategy](https://iopscience.iop.org/article/10.1088/1361-648X/ad1278) during MD simulations.
 
 ---
 
@@ -176,7 +176,7 @@ include_virial = True
 include_VDW = True
 ```
 
-The script will then traverse all `OUTCAR` files in the given folder and output a combined `train.xyz`. 
+The script will then traverse all [`OUTCAR`](https://www.vasp.at/wiki/OUTCAR) files in the given folder and output a combined `train.xyz`. 
 
 Users may also further customize the script as needed.
 
