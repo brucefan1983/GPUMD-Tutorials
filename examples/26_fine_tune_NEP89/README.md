@@ -9,7 +9,7 @@ We also strongly encourage readers to reproduce the examples from the [NEP89 man
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="800">
 
-### If anyone has any questions or suggestions regarding this tutorial, please feel free to email me at: [liangting.zh@gmail.com](liangting.zh@gmail.com))
+### If anyone has any questions or suggestions regarding this tutorial, please feel free to email me at: [liangting.zj@gmail.com](liangting.zj@gmail.com))
 
 ## 1. Introduction
 
@@ -219,11 +219,19 @@ The prediction results for **MoS₂** are shown below:
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="900">
 
-
+It can be seen that NEP89, when directly predicting the fine-tuning training set ([`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz)), shows a certain degree of deviation.  
+This issue has also been noted in a recent [preprint](https://arxiv.org/abs/2509.13798).  
+In practice, however, this can be effectively resolved through **fine-tuning**.
 
 ## 7. Procedure of fine-tuning NEP89 
 
+Next, we demonstrate how to perform fine-tuning using the prepared [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz).
 
+We recommend that readers first review the GPUMD manual section on the [`fine_tune`](https://gpumd.org/nep/input_parameters/fine_tune.html#fine-tune) command.  
+	
+For clarity, we also provide here a simplified schematic illustration of the potential energy surface before and after fine-tuning.
+
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-PES.png" alt="prediction" width="800">
 
 
 ## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
