@@ -287,7 +287,7 @@ In our case, we found that the model fine-tuned for **10,000 steps** gave the be
 
 The thermal conductivity calculated using the **model fine-tuned for 10,000 steps** was **152.05 ± 6.74 W/mK** (10 HNEMD), which agrees very well with the results from [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937).  
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-TC.png" alt="Fine-tuned-TC" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-TC.png" alt="Fine-tuned-TC" width="600">
 	
 
 ## 9. Summary
