@@ -264,9 +264,9 @@ generation 11000
 ```
 
 **Key notes:**
-- `type`: **list of chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.  
+- `type`: **list of chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.   
+- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**. 
 - `generation 11000`: we performed **11,000 fine-tuning steps** in total.  
-- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**.  
 - The modifiable parameters can be customized by users to suit their specific requirements (see `These can be changed:`).
 
 **General guidelines:**
