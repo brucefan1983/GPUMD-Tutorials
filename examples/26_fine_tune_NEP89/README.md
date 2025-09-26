@@ -123,10 +123,15 @@ run             10000
 ### References
 
 [1] Liang T, Xu K, Lindgren E, et al. [NEP89: Universal neuroevolution potential for inorganic and organic materials across 89 elements](https://arxiv.org/abs/2504.21286). arXiv preprint arXiv:2504.21286, 2025.
+
 [2] Xia J, Zhang Y, Jiang B. [The evolution of machine learning potentials for molecules, reactions and materials](https://pubs.rsc.org/en/content/articlehtml/2025/cs/d5cs00104h). Chemical Society Reviews, 2025.
+
 [3] Riebesell J, Goodall R E A, Benner P, et al. [A framework to evaluate machine learning crystal stability predictions](). Nature Machine Intelligence, 2025, 7(6): 836-847.
+
 [4] Wood B M, Dzamba M, Fu X, et al. [UMA: A Family of Universal Models for Atoms](https://arxiv.org/abs/2506.23971). arXiv preprint arXiv:2506.23971, 2025.
+
 [5]	Deng B, Zhong P, Jun K J, et al. [CHGNet as a pretrained universal neural network potential for charge-informed atomistic modelling](https://www.nature.com/articles/s42256-023-00716-3). Nature Machine Intelligence, 2023, 5(9): 1031-1041.
+
 [6] Batatia I, Benner P, Chiang Y, et al. [A foundation model for atomistic materials chemistry](https://arxiv.org/abs/2401.00096). arXiv preprint arXiv:2401.00096, 2023.
 
 
