@@ -229,9 +229,41 @@ Next, we demonstrate how to perform fine-tuning using the prepared [`train.xyz`]
 
 We recommend that readers first review the GPUMD manual section on the [`fine_tune`](https://gpumd.org/nep/input_parameters/fine_tune.html#fine-tune) command.  
 	
-For clarity, we also provide here a simplified schematic illustration of the potential energy surface before and after fine-tuning.
+For clarity, we also provide here a simplified schematic illustration of the potential energy surface before and after fine-tuning (see below).
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-PES.png" alt="prediction" width="800">
+
+An example [`nep.in`](run-fine-tuning/nep.in) file for fine-tuning is given below:
+	
+```plaintext
+# for prediction
+#type       89 H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Ac Th Pa U Np Pu 
+#prediction 1
+
+# for fine-tuning
+fine_tune  nep89_20250409.txt nep89_20250409.restart
+type       2  Mo  S
+# These cannot be changed:
+version    4
+zbl        2
+cutoff     6 5
+n_max      4 4
+basis_size 8 8
+l_max      4 2 1
+neuron     80
+
+# These can be changed:
+lambda_1   0
+lambda_e   1
+lambda_f   1
+lambda_v   1
+batch      5000
+population 50
+save_potential 1000 0
+generation 11000
+```
+
+
 
 
 ## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model

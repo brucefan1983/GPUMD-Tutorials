@@ -1,0 +1,19 @@
+potential      ../nep_0409_virial.txt
+velocity       300
+
+ensemble       npt_scr 300 300 100 0 0 0 20 20 100 1000
+time_step      1
+dump_thermo    10000
+dump_position  200000
+run            2000000
+
+#################################### HNEMD ##############################################
+# ************** '1' in the compute_shc means grouping method 1 ******************
+
+ensemble             nvt_nhc    300   300      100
+compute_hnemd        1000       0     0.00001  0
+compute_shc          2    500   1     1000     400
+
+dump_position        1000000
+
+run                  10000000
