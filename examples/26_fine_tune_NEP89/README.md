@@ -172,8 +172,10 @@ In [`vasp2nep.py`](SCF-calculations/vasp2nep.py), users only need to modify the 
 path = '26_fine_tune_NEP89/SCF-calculations'
 include_virial = True
 include_VDW = True
+```
+The script will then traverse all `OUTCAR` files in the given folder and output a combined train.xyz. 
 
-
+Users may also further customize the script as needed.
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
@@ -198,7 +200,7 @@ batch      5000
 prediction 1
 population 10
 generation 1000
-
+```
 
 Compared to the standard NEP input, the **key difference** is the addition of:
 
