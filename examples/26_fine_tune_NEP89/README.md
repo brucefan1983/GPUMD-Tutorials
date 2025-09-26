@@ -125,6 +125,54 @@ The parameter min_distance defines the distance threshold for selecting configur
 
 ## 5. Single-point calculation of DFT
 
+After obtaining the configurations, **single-point DFT calculations** can be performed.  
+In our case, we used **VASP**. An example [`INCAR`](SCF-calculations/INCAR) file is shown below:
+
+```plaintext
+ISTART =  0            (Not read existing wavefunction)
+ISPIN  =  1            (Non-spin-polarized DFT)
+
+ICHARG =  2            (Initial guess from superposition of atomic charge density)
+LREAL  =  Auto         (Projection operators: automatic)
+ENCUT  =  520          (Plane-wave cutoff energy in eV)
+
+IVDW   =  12           (Many-body dispersion correction enabled)
+
+LWAVE  = .FALSE.       (Do not write WAVECAR)
+LCHARG = .FALSE.       (Do not write CHGCAR)
+
+PREC     =  Accurate
+KGAMMA   = .TRUE.      # Gamma point only
+KSPACING = 0.15        # Automatic k-point generation
+ALGO     = Normal
+
+# Static calculation
+NSW    =   1
+IBRION =  -1
+ISMEAR =  -5           (Gaussian smearing method)
+
+EDIFF  =  1E-06        (Energy convergence, eV)
+NELM   =  150          (Maximum SCF steps)
+```
+
+The choice of **INCAR parameters** requires users to carefully study the [VASP manual](https://www.vasp.at).  
+The quality of the single-point calculations is **crucial** for dataset preparation.
+
+In our fine-tuning dataset, we included **[`IVDW = 12`](https://www.vasp.at/wiki/DFT-D3)**.  
+For systems requiring long-range dispersion corrections, users may alternatively **[`IVDW = 12`](https://www.vasp.at/wiki/DFT-D3)** during the single-point DFT step and instead adopt the [NEP+D3 strategy](https://iopscience.iop.org/article/10.1088/1361-648X/ad1278) during MD simulations.
+
+---
+
+After completing the single-point calculations, we used [`vasp2nep.py`](SCF-calculations/vasp2nep.py) to **extract energy/force/virial data** and output them into [`train.xyz`](https://gpumd.org/nep/input_files/train_test_xyz.html).  
+Similar tools can also be found in the [GPUMD repository](https://github.com/brucefan1983/GPUMD/tree/master/tools/Format_Conversion/vasp2xyz).
+
+In [`vasp2nep.py`](SCF-calculations/vasp2nep.py), users only need to modify the following lines:
+
+```python
+path = '26_fine_tune_NEP89/SCF-calculations'
+include_virial = True
+include_VDW = True
+
 
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
