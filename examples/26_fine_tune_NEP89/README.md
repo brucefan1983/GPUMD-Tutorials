@@ -265,9 +265,9 @@ generation 11000
 
 **Key notes:**
 - `type`: **list of chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.   
-- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**. 
+- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**. see [save_potential](https://gpumd.org/nep/input_parameters/save_potential.html#save-potential) command.
 - `generation 11000`: we performed **11,000 fine-tuning steps** in total.  
-- The modifiable parameters can be customized by users to suit their specific requirements (see `These can be changed:`).
+- The modifiable parameters can be customized by users to suit their specific requirements (see `These can be changed:` section in [`nep.in`](5.run-fine-tuning/nep.in)).
 
 **General guidelines:**
 - Larger fine-tuning datasets typically require more steps.  
