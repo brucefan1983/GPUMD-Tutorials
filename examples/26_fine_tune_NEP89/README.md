@@ -264,8 +264,8 @@ generation 11000
 ```
 
 **Key notes:**
-- `type`: **list of chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.   
-- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**. see [save_potential](https://gpumd.org/nep/input_parameters/save_potential.html#save-potential) command.
+- `type`: **list of numbers and chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.   
+- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**. See [save_potential](https://gpumd.org/nep/input_parameters/save_potential.html#save-potential) command.
 - `generation 11000`: we performed **11,000 fine-tuning steps** in total.  
 - The modifiable parameters can be customized by users to suit their specific requirements (see `These can be changed:` section in [`nep.in`](5.run-fine-tuning/nep.in)).
 
@@ -285,9 +285,9 @@ After obtaining potentials at different fine-tuning steps (requires GPUMD versio
 
 In our case, we found that the model fine-tuned for **10,000 steps** gave the best agreement with reference values in thermal conductivity calculations of MoS₂ (as also discussed in the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286)).  
 
-The thermal conductivity calculated using the **model fine-tuned for 10,000 steps** was **152.05 ± 6.74 W/mK**, which agrees very well with the results from [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937).  
+The thermal conductivity calculated using the **model fine-tuned for 10,000 steps** was **152.05 ± 6.74 W/mK** (10 HNEMD), which agrees very well with the results from [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937).  
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/6.Fine-tuned-TC.png" alt="Fine-tuned-TC" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/Fine-tuned-TC.png" alt="Fine-tuned-TC" width="800">
 	
 
 ## 9. Summary
@@ -298,8 +298,7 @@ The key point is that fine-tuning should always be carried out **with the intend
 Alternatively, fine-tuning can also be performed by **iteratively expanding the training dataset**.  
 In this case, it is important to note that **each fine-tuning should always start from the original NEP89 model**, not from a previously fine-tuned one.
 
-We encourage readers to carefully follow this fine-tuning procedure step by step.  
-All relevant input and script files are provided in the corresponding folders of this tutorial.
+We encourage readers to carefully follow this fine-tuning procedure step by step. All relevant input and script files are provided in the corresponding folders of this tutorial.
 
 
 ## References
