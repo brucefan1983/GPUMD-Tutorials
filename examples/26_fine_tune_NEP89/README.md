@@ -55,7 +55,7 @@ The NEP89 model is included in the [GPUMD package](https://github.com/brucefan19
 We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The [`model.xyz`](Out-of-the-box/model.xyz) file for MoS₂ is available in the working directory. 
 Since MoS₂ is a 2D material, the periodic boundary conditions are set as `pbc="T T F"`.
 
-Below is an example `run.in`]() file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
+Below is an example [`run.in`](Out-of-the-box/run.in) file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
 
 ```plaintext
 potential      nep89_20250409.txt
@@ -181,7 +181,7 @@ Users may also further customize the script as needed.
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
-Once `train.xyz` has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
+Once [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz) has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
 
 An example [`nep.in`](prediction/nep.in) file is given below:
 
@@ -217,7 +217,7 @@ This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GP
 
 The prediction results for **MoS₂** are shown below:
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="900">
 
 ## 7. Procedure of fine-tuning NEP89 
 
