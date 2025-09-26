@@ -78,10 +78,11 @@ run            10000000          ## 10 ns
 For detailed instructions on calculating thermal conductivity using HNEMD, refer to the [GPUMD tutorial on thermal transport](https://github.com/brucefan1983/GPUMD-Tutorials/blob/main/examples/04_Carbon_thermal_transport_nemd_and_hnemd/diffusive/tutorial.ipynb). 
 Note that performing multiple independent HNEMD simulations to obtain standard errors is recommended.
 
-In our case, 10 HNEMD simulations yielded a thermal conductivity of **`64.5163 ± 3.6378 W/m/K`**. 
+In our case, 10 HNEMD simulations yielded a thermal conductivity of **`64.5163 ± 3.6378 W/m/K`** (see below figure). 
 This result significantly deviates from both the specialized NEP model by [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937), 
 indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ thermal conductivity.
 
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/out-of-the-box-TC.png" alt="out-of-the-box-TC" width="800">
 
 ## 4. Utilize NEP89 to generate fine-tuned configurations
 
@@ -103,7 +104,7 @@ velocity       300
 ensemble       npt_scr 300 300 100 0 0 0 20 20 100 1000
 time_step      1
 dump_thermo    1000
-dump_position  3000
+dump_position  3000                                     # dump movie.xyz
 run            3000000
 ```
 
@@ -117,9 +118,9 @@ Of course, many other tools can achieve the same purpose.
 In this script, **lines 85–87** need to be adjusted as appropriate:
 	
 ```python
-    calc = NEP("nep_0409_virial.txt")
-    min_distance = 0.00082
-    get_selected_frames("movie.xyz", calc, min_distance)
+calc = NEP("nep_0409_virial.txt")
+min_distance = 0.00082
+get_selected_frames("movie.xyz", calc, min_distance)
 ```
 
 The parameter min_distance defines the distance threshold for selecting configurations, and tuning this value allows users to control the number of sampled frames.
@@ -212,8 +213,7 @@ prediction 1
 
 This enables **[prediction mode](https://gpumd.org/nep/input_parameters/prediction.html#prediction)**.
 
-The script [`Plot_prediction.py`](prediction/Plot_prediction.py) can then be used to **visualize the prediction results**.  
-This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
+The script [`Plot_prediction.py`](prediction/Plot_prediction.py) can then be used to **visualize the prediction results**. This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
 
 The prediction results for **MoS₂** are shown below:
 
