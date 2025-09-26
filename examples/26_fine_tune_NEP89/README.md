@@ -3,7 +3,7 @@
 In this tutorial, we provide a step-by-step guide on using the [NEP89 foundation model](https://github.com/brucefan1983/GPUMD/blob/master/potentials/nep/nep89_20250409/nep89_20250409.txt) for property calculations and fine-tuning. 
 
 Here, we focus on calculating the thermal conductivity of monolayer MoS₂ as an example, demonstrating how to fine-tune NEP89 to achieve accurate physical properties when out-of-the-box predictions are insufficient. 
-The fine-tuning results for the thermal conductivity of MoS₂ are presented below.
+The fine-tuning results for the thermal conductivity of monolayer MoS₂ are presented below.
 
 We also strongly encourage readers to reproduce the examples from the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286), both in its out-of-the-box and fine-tuned applications.
 
@@ -13,14 +13,18 @@ We also strongly encourage readers to reproduce the examples from the [NEP89 man
 
 ## 1. Introduction
 
-Machine learning potentials (MLPs) covering the entire periodic table, often referred to as *foundation models* or *universal potentials*, have gained significant attention in recent years (see Ref.[1-6](### References)). 
+Machine learning potentials (MLPs) covering the entire periodic table, often referred to as *foundation models* or *universal potentials*, have gained significant attention in recent years (see Ref. [1]–[6]). 
 To stay updated on the latest developments, explore the [Matbench Discovery leaderboard](https://matbench-discovery.materialsproject.org/contribute).
 
-While the NEP89 model may not achieve the highest training accuracy, its training dataset encompasses both organic and inorganic materials, enabling true molecular dynamics (MD) simulations across 89 elements. NEP89's key strengths include:
+While the NEP89 model may not achieve very high training accuracy, its training dataset encompasses both organic and inorganic materials, enabling molecular dynamics (MD) simulations across 89 elements. 
+
+NEP89's key strengths include:
 
 ✅ **Comprehensive Coverage**: Supports 89 elements, covering both inorganic and organic materials.  
 
 ✅ **Exceptional Speed**: Over 1000x faster than comparable models, capable of simulating 15 million atoms on a single GPU.
+	
+✅ **Out-of-the-box functionality**: Instantly supports large-scale molecular dynamics simulations
 
 See the speed comparison below:  
 
@@ -37,6 +41,7 @@ Potential applications for NEP89 include:
 ✅ **Fine-Tuning**: Enhanced accuracy with minimal DFT calculations for targeted MD simulations.  
 
 ✅ **Replacing AIMD**: Generating realistic MD configurations to build training datasets.
+	
 
 ## 2. Accessing the NEP89 Model
 
