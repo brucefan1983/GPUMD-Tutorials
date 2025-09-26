@@ -9,7 +9,7 @@ We also strongly encourage readers to reproduce the examples from the [NEP89 man
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="800">
 
-
+### If anyone has any questions or suggestions regarding this tutorial, please feel free to email me at: [liangting.zh@gmail.com](liangting.zh@gmail.com))
 
 ## 1. Introduction
 
@@ -82,7 +82,7 @@ In our case, 10 HNEMD simulations yielded a thermal conductivity of **`64.5163 �
 This result significantly deviates from both the specialized NEP model by [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937), 
 indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ thermal conductivity.
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/out-of-the-box-TC.png" alt="out-of-the-box-TC" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/out-of-the-box-TC.png" alt="out-of-the-box-TC" width="600">
 
 ## 4. Utilize NEP89 to generate fine-tuned configurations
 
@@ -128,7 +128,7 @@ The parameter min_distance defines the distance threshold for selecting configur
 ## 5. Single-point calculation of DFT
 
 After obtaining the configurations, **single-point DFT calculations** can be performed.  
-In our case, we used **VASP**. An example [`INCAR`](SCF-calculations/INCAR) file is shown below:
+In our case, we used [**VASP**](https://www.vasp.at). An example [`INCAR`](SCF-calculations/INCAR) file is shown below:
 
 ```plaintext
 ISTART =  0            (Not read existing wavefunction)
@@ -176,13 +176,13 @@ include_virial = True
 include_VDW = True
 ```
 
-The script will then traverse all `OUTCAR` files in the given folder and output a combined train.xyz. 
+The script will then traverse all `OUTCAR` files in the given folder and output a combined `train.xyz`. 
 
 Users may also further customize the script as needed.
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
-Once [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz) has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
+Once [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/train.xyz) has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
 
 An example [`nep.in`](prediction/nep.in) file is given below:
 
@@ -219,7 +219,11 @@ The prediction results for **MoS₂** are shown below:
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="900">
 
+
+
 ## 7. Procedure of fine-tuning NEP89 
+
+
 
 
 ## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
@@ -227,7 +231,7 @@ The prediction results for **MoS₂** are shown below:
 
 
 
-### References
+## References
 
 [1] Liang T, Xu K, Lindgren E, et al. [NEP89: Universal neuroevolution potential for inorganic and organic materials across 89 elements](https://arxiv.org/abs/2504.21286). arXiv preprint arXiv:2504.21286, 2025.
 
@@ -244,5 +248,3 @@ The prediction results for **MoS₂** are shown below:
 [7] Jiang W, Bu H, Liang T, et al. [Accurate Modeling of Interfacial Thermal Transport in van der Waals Heterostructures via Hybrid Machine Learning and Registry-Dependent Potentials](https://arxiv.org/abs/2505.00376). arXiv preprint arXiv:2505.00376, 2025.
 
 [8] Gu X, Li B, Yang R. [Layer thickness-dependent phonon properties and thermal conductivity of MoS₂](https://pubs.aip.org/aip/jap/article/119/8/085106/143937). Journal of Applied Physics, 2016, 119(8).
-
-[9]
