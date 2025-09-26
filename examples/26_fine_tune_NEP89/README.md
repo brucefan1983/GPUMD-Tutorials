@@ -13,12 +13,13 @@ We also strongly encourage readers to reproduce the examples from the [NEP89 man
 
 ## 1. Introduction
 
-Machine learning potentials (MLPs) covering the entire periodic table, often referred to as *foundation models* or *universal potentials*, have gained significant attention in recent years (see Ref. [1]–[6]). 
+Machine learning potentials (MLPs) covering the entire periodic table, often referred to as *foundation models* or *universal potentials*, have gained significant attention in recent years (see <a href="#references">References [1–6]</a>).
+
 To stay updated on the latest developments, explore the [Matbench Discovery leaderboard](https://matbench-discovery.materialsproject.org/contribute).
 
 While the NEP89 model may not achieve very high training accuracy, its training dataset encompasses both organic and inorganic materials, enabling molecular dynamics (MD) simulations across 89 elements. 
 
-NEP89's key strengths include:
+**NEP89's key strengths include:**
 
 ✅ **Comprehensive Coverage**: Supports 89 elements, covering both inorganic and organic materials.  
 
