@@ -7,7 +7,7 @@ The fine-tuning results for the thermal conductivity of monolayer MoS₂ are pre
 
 We also strongly encourage readers to reproduce the examples from the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286), both in its out-of-the-box and fine-tuned applications.
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="700">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/TC_MoS2.png" alt="Thermal Conductivity of MoS₂" width="800">
 
 
 
@@ -29,13 +29,13 @@ While the NEP89 model may not achieve very high training accuracy, its training 
 
 See the speed comparison below:  
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/speed.png" alt="Speed Comparison" width="700">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/speed.png" alt="Speed Comparison" width="800">
 
 For more details, refer to the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286) and the associated [WeChat article](https://mp.weixin.qq.com/s/D8j73BOke8o63BSnukebgg).
 	
 NEP89 is increasingly adopted in various studies and may soon be included in the [Matbench Discovery leaderboard](https://matbench-discovery.materialsproject.org/contribute).
 
-Potential applications for NEP89 include:  
+**Potential applications for NEP89 include:**
 
 ✅ **Out-of-the-Box Simulations**: Directly applicable to diverse systems and MD scenarios.  
 
@@ -52,7 +52,8 @@ The NEP89 model is included in the [GPUMD package](https://github.com/brucefan19
 
 ## 3. Out-of-the-Box Application: Thermal Conductivity of MoS₂
 
-We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The `model.xyz` file for MoS₂ is available in the working directory. Since MoS₂ is a 2D material, the periodic boundary conditions are set as `pbc="T T F"`.
+We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The [`model.xyz`](Out-of-the-box/model.xyz) file for MoS₂ is available in the working directory. 
+Since MoS₂ is a 2D material, the periodic boundary conditions are set as `pbc="T T F"`.
 
 Below is an example `run.in` file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
 
@@ -75,11 +76,12 @@ run            10000000          ## 10 ns
 
 ```
 
-For detailed instructions on calculating thermal conductivity using HNEMD, refer to the GPUMD tutorial on thermal transport
-. Note that performing multiple independent HNEMD simulations to obtain standard errors is recommended.
+For detailed instructions on calculating thermal conductivity using HNEMD, refer to the [GPUMD tutorial on thermal transport](https://github.com/brucefan1983/GPUMD-Tutorials/blob/main/examples/04_Carbon_thermal_transport_nemd_and_hnemd/diffusive/tutorial.ipynb). 
+Note that performing multiple independent HNEMD simulations to obtain standard errors is recommended.
 
 In our case, 10 HNEMD simulations yielded a thermal conductivity of `64.5163 ± 3.6378 W/m/K`. 
-This result significantly deviates from both the specialized NEP model by Jiang et al. and DFT-BTE calculations, indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ thermal conductivity.
+This result significantly deviates from both the specialized NEP model by Jiang et al. and DFT-BTE calculations, 
+indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ thermal conductivity.
 
 
 ## 4. Utilize NEP89 to generate fine-tuned configurations
