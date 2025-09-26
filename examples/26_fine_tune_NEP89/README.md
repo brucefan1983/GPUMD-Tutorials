@@ -121,6 +121,7 @@ In this script, **lines 85–87** need to be adjusted as appropriate:
     min_distance = 0.00082
     get_selected_frames("movie.xyz", calc, min_distance)
 ```
+
 The parameter min_distance defines the distance threshold for selecting configurations, and tuning this value allows users to control the number of sampled frames.
 
 ## 5. Single-point calculation of DFT
@@ -173,6 +174,7 @@ path = '26_fine_tune_NEP89/SCF-calculations'
 include_virial = True
 include_VDW = True
 ```
+
 The script will then traverse all `OUTCAR` files in the given folder and output a combined train.xyz. 
 
 Users may also further customize the script as needed.
@@ -205,12 +207,10 @@ generation 1000
 Compared to the standard NEP input, the **key difference** is the addition of:
 
 ```plaintext
-
-   prediction 1
-   
+prediction 1
 ```
 
-This enables **prediction mode**.
+This enables **[prediction mode](https://gpumd.org/nep/input_parameters/prediction.html#prediction)**.
 
 The script [`Plot_prediction.py`](prediction/Plot_prediction.py) can then be used to **visualize the prediction results**.  
 This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
