@@ -276,15 +276,32 @@ generation 11000
 After fine-tuning, the script [`Plot_RMSE.py`](run-fine-tuning/Plot_RMSE.py) can be used to **visualize the root mean square error (RMSE) evolution** (for fine-tuned 11000 steps).  
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/RMSE.png" alt="RMSE" width="800">
-
-In our tests, we found that the model fine-tuned for **10,000 steps** gave the best agreement with reference values in thermal conductivity calculations of MoS₂ (as also discussed in the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286)).  
-
+	
 Readers may also test the relationship between the number of fine-tuning steps and the resulting physical properties for their own systems.
 
 ## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
 
+After obtaining potentials at different fine-tuning steps (requires GPUMD version ≥ 4.0), users can validate the corresponding physical properties.  
 
+In our case, we found that the model fine-tuned for **10,000 steps** gave the best agreement with reference values in thermal conductivity calculations of MoS₂ (as also discussed in the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286)).  
 
+The thermal conductivity calculated using the **model fine-tuned for 10,000 steps** was **152.05 ± 6.74 W/mK**, which agrees very well with the results from [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937).  
+
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-TC.png" alt="fine-tuned-TC" width="800">
+	
+
+---
+
+In this tutorial, we have demonstrated how **NEP89** can be fine-tuned efficiently to obtain a potential with good performance.  
+The key point is that fine-tuning should always be carried out **with the intended application scenario in mind**.  
+
+Alternatively, fine-tuning can also be performed by **iteratively expanding the training dataset**.  
+In this case, it is important to note that **each fine-tuning should always start from the original NEP89 model**, not from a previously fine-tuned one.
+
+We encourage readers to carefully follow this fine-tuning procedure step by step.  
+All relevant input and script files are provided in the corresponding folders of this tutorial.
+
+---
 
 ## References
 
