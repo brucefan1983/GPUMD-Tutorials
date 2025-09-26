@@ -79,8 +79,8 @@ run            10000000          ## 10 ns
 For detailed instructions on calculating thermal conductivity using HNEMD, refer to the [GPUMD tutorial on thermal transport](https://github.com/brucefan1983/GPUMD-Tutorials/blob/main/examples/04_Carbon_thermal_transport_nemd_and_hnemd/diffusive/tutorial.ipynb). 
 Note that performing multiple independent HNEMD simulations to obtain standard errors is recommended.
 
-In our case, 10 HNEMD simulations yielded a thermal conductivity of `64.5163 ± 3.6378 W/m/K`. 
-This result significantly deviates from both the specialized NEP model by Jiang et al. and DFT-BTE calculations, 
+In our case, 10 HNEMD simulations yielded a thermal conductivity of **`64.5163 ± 3.6378 W/m/K`**. 
+This result significantly deviates from both the specialized NEP model by [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937), 
 indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ thermal conductivity.
 
 
@@ -88,38 +88,19 @@ indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ ther
 
 To improve accuracy, NEP89 can be fine-tuned using a small set of DFT calculations to generate configurations tailored for MoS₂.
 
-## Single-point calculation of DFT
-
-The first figure below demonstrates an example of how the choice of cutoff distance affects the calculated $$\kappa$$. Here, we fix the second-order cutoff to $$8.0$$ Å and vary the third-order cutoff from $$4.0$$ Å to $$6.0$$ Å. As shown, increasing the cutoff from $$4.0$$ Å to $$5.0$$ Å significantly alters the results, while the change from $$5.0$$ Å to $$6.0$$ Å leads to only minor differences, indicating convergence. However, it is important to note that simply increasing the cutoff does not always improve accuracy. The definition of interaction clusters is based on pairwise atomic distances between discrete neighbors in the crystal, not a continuous function. Therefore, careful convergence tests are necessary, especially for more complex materials where the range of interactions and crystal symmetry may demand different cutoff schemes.
-
-![Cutoff Convergence](https://raw.githubusercontent.com/ZengZezhu/figures_PbTe_tutorial/main/diffcutoff.png)
-
-## Direct prediction of the MoS<sub>2</sub>’s configuration by NEP89
+## 5. Single-point calculation of DFT
 
 
-## Procedure of fine-tuning NEP89 
+
+## 6. Direct prediction of the MoS<sub>2</sub>’s configuration by NEP89
 
 
-## Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
+## 7. Procedure of fine-tuning NEP89 
 
-The following is an example `run.in` input file used in the [GPUMD](https://gpumd.org/) package to generate atomic trajectories for TDEP analysis. The simulation is carried out in two stages:
 
-```plaintext
-potential       /path/to/nep.txt
-time_step       1
+## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
 
-velocity        300
 
-ensemble        nvt_nhc 300 300 100
-dump_thermo     1000
-run             50000
-
-ensemble        nve
-time_step       1
-dump_thermo     1000
-dump_exyz       100 0 1
-run             10000
-```
 
 
 ### References
@@ -136,5 +117,8 @@ run             10000
 
 [6] Batatia I, Benner P, Chiang Y, et al. [A foundation model for atomistic materials chemistry](https://arxiv.org/abs/2401.00096). arXiv preprint arXiv:2401.00096, 2023.
 
+[7] Jiang W, Bu H, Liang T, et al. [Accurate Modeling of Interfacial Thermal Transport in van der Waals Heterostructures via Hybrid Machine Learning and Registry-Dependent Potentials](https://arxiv.org/abs/2505.00376). arXiv preprint arXiv:2505.00376, 2025.
 
+[8] Gu X, Li B, Yang R. [Layer thickness-dependent phonon properties and thermal conductivity of MoS₂](https://pubs.aip.org/aip/jap/article/119/8/085106/143937). Journal of Applied Physics, 2016, 119(8).
 
+[9]
