@@ -52,10 +52,10 @@ The NEP89 model is included in the [GPUMD package](https://github.com/brucefan19
 
 ## 3. Out-of-the-Box Application: Thermal Conductivity of MoS₂
 
-We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The [`model.xyz`](Out-of-the-box/model.xyz) file for MoS₂ is available in the working directory. 
+We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The [`model.xyz`](1.Out-of-the-box/model.xyz) file for MoS₂ is available in the working directory. 
 Since MoS₂ is a 2D material, the periodic boundary conditions are set as `pbc="T T F"`.
 
-Below is an example [`run.in`](Out-of-the-box/run.in) file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
+Below is an example [`run.in`](1.Out-of-the-box/run.in) file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
 
 ```plaintext
 potential      nep89_20250409.txt
@@ -95,7 +95,7 @@ In our case, we are interested in the thermal conductivity of MoS₂ at 300 K. T
 It is important to note that the sampled configurations must later be used for single-point DFT calculations to obtain reference energies, forces, and stresses. 
 Therefore, the number of atoms in the MD sampling should not be too large, ensuring that DFT calculations remain computationally feasible.
 
-An example [run.in](run-MD-for-fine-tuning/run.in) is shown below:
+An example [run.in](2.run-MD-for-fine-tuning/run.in) is shown below:
 
 ```plaintext
 potential      nep89_20250409.txt
@@ -112,7 +112,7 @@ Here, we performed a **3 ns NPT simulation** and sampled configurations every **
 
 To achieve better sample phase space, we carried out **two independent random MD simulations** and then applied **farthest point sampling (FPS)** to obtain **104 representative frames**.
 
-The FPS procedure was performed using the script [`nep-select-fps.py`](run-MD-for-fine-tuning/nep-select-fps.py).  
+The FPS procedure was performed using the script [`nep-select-fps.py`](2.run-MD-for-fine-tuning/nep-select-fps.py).  
 Of course, many other tools can achieve the same purpose.
 
 In this script, **lines 85–87** need to be adjusted as appropriate:
@@ -128,7 +128,7 @@ The parameter min_distance defines the distance threshold for selecting configur
 ## 5. Single-point calculation of DFT
 
 After obtaining the configurations, **single-point DFT calculations** can be performed.  
-In our case, we used [**VASP**](https://www.vasp.at). An example [`INCAR`](SCF-calculations/INCAR) file is shown below:
+In our case, we used [**VASP**](https://www.vasp.at). An example [`INCAR`](3.SCF-calculations/INCAR) file is shown below:
 
 ```plaintext
 ISTART =  0            (Not read existing wavefunction)
@@ -165,13 +165,13 @@ For systems requiring long-range dispersion corrections, users may alternatively
 
 ---
 
-After completing the single-point calculations, we used [`vasp2nep.py`](SCF-calculations/vasp2nep.py) to **extract energy/force/virial data** and output them into [`train.xyz`](https://gpumd.org/nep/input_files/train_test_xyz.html).  
+After completing the single-point calculations, we used [`vasp2nep.py`](3.SCF-calculations/vasp2nep.py) to **extract energy/force/virial data** and output them into [`train.xyz`](https://gpumd.org/nep/input_files/train_test_xyz.html).  
 Similar tools can also be found in the [GPUMD repository](https://github.com/brucefan1983/GPUMD/tree/master/tools/Format_Conversion/vasp2xyz).
 
-In [`vasp2nep.py`](SCF-calculations/vasp2nep.py), users only need to modify the following lines:
+In [`vasp2nep.py`](3.SCF-calculations/vasp2nep.py), users only need to modify the following lines:
 
 ```python
-path = '26_fine_tune_NEP89/SCF-calculations'
+path = '26_fine_tune_NEP89/3.SCF-calculations'
 include_virial = True
 include_VDW = True
 ```
@@ -182,9 +182,9 @@ Users may also further customize the script as needed.
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
-Once [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/train.xyz) has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
+Once [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/4.prediction/train.xyz) has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
 
-An example [`nep.in`](prediction/nep.in) file is given below:
+An example [`nep.in`](4.prediction/nep.in) file is given below:
 
 ```plaintext
 type       89 H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Ac Th Pa U Np Pu 
@@ -213,19 +213,19 @@ prediction 1
 
 This enables **[prediction mode](https://gpumd.org/nep/input_parameters/prediction.html#prediction)**.
 
-The script [`Plot_prediction.py`](prediction/Plot_prediction.py) can then be used to **visualize the prediction results**. This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
+The script [`Plot_prediction.py`](4.prediction/Plot_prediction.py) can then be used to **visualize the prediction results**. This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
 
 The prediction results for **MoS₂** are shown below:
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="900">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/4.prediction/prediction.png" alt="prediction" width="900">
 
-It can be seen that NEP89, when directly predicting the fine-tuning training set ([`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz)), shows a certain degree of deviation.  
+It can be seen that NEP89, when directly predicting the fine-tuning training set ([`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/5.run-fine-tuning/train.xyz)), shows a certain degree of deviation.  
 This issue has also been noted in a recent [preprint](https://arxiv.org/abs/2509.13798).  
 In practice, however, this can be effectively resolved through **fine-tuning**.
 
 ## 7. Procedure of fine-tuning NEP89 
 
-Next, we demonstrate how to perform fine-tuning using the prepared [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/train.xyz).
+Next, we demonstrate how to perform fine-tuning using the prepared [`train.xyz`](https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/5.run-fine-tuning/train.xyz).
 
 We recommend that readers first review the GPUMD manual section on the [`fine_tune`](https://gpumd.org/nep/input_parameters/fine_tune.html#fine-tune) command.  
 	
@@ -233,7 +233,7 @@ For clarity, we also provide here a simplified schematic illustration of the pot
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-PES.png" alt="prediction" width="800">
 
-An example [`nep.in`](run-fine-tuning/nep.in) file for fine-tuning is given below:
+An example [`nep.in`](5.run-fine-tuning/nep.in) file for fine-tuning is given below:
 	
 ```plaintext
 # for prediction
@@ -273,9 +273,9 @@ generation 11000
 - Larger fine-tuning datasets typically require more steps.  
 - Excessive fine-tuning should be avoided to prevent **catastrophic forgetting**.  
 
-After fine-tuning, the script [`Plot_RMSE.py`](run-fine-tuning/Plot_RMSE.py) can be used to **visualize the root mean square error (RMSE) evolution** (for fine-tuned 11000 steps).  
+After fine-tuning, the script [`Plot_RMSE.py`](5.run-fine-tuning/Plot_RMSE.py) can be used to **visualize the root mean square error (RMSE) evolution** (for fine-tuned 11000 steps).  
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/RMSE.png" alt="RMSE" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/5.run-fine-tuning/RMSE.png" alt="RMSE" width="800">
 	
 Readers may also test the relationship between the number of fine-tuning steps and the resulting physical properties for their own systems.
 
@@ -287,10 +287,10 @@ In our case, we found that the model fine-tuned for **10,000 steps** gave the be
 
 The thermal conductivity calculated using the **model fine-tuned for 10,000 steps** was **152.05 ± 6.74 W/mK**, which agrees very well with the results from [Jiang et al.](https://arxiv.org/abs/2505.00376) and [DFT-BTE calculations](https://pubs.aip.org/aip/jap/article/119/8/085106/143937).  
 
-<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/fine-tuned-TC.png" alt="fine-tuned-TC" width="800">
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/6.Fine-tuned-TC.png" alt="Fine-tuned-TC" width="800">
 	
 
----
+## 9. Summary
 
 In this tutorial, we have demonstrated how **NEP89** can be fine-tuned efficiently to obtain a potential with good performance.  
 The key point is that fine-tuning should always be carried out **with the intended application scenario in mind**.  
@@ -301,7 +301,6 @@ In this case, it is important to note that **each fine-tuning should always star
 We encourage readers to carefully follow this fine-tuning procedure step by step.  
 All relevant input and script files are provided in the corresponding folders of this tutorial.
 
----
 
 ## References
 
