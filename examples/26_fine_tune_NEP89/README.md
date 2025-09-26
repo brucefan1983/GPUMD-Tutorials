@@ -217,7 +217,7 @@ This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GP
 
 The prediction results for **MoS₂** are shown below:
 
-
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/prediction/prediction.png" alt="prediction" width="800">
 
 ## 7. Procedure of fine-tuning NEP89 
 
