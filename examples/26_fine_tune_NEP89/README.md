@@ -27,7 +27,7 @@ While the NEP89 model may not achieve very high training accuracy, its training 
 	
 ✅ **Out-of-the-box functionality**: Instantly supports large-scale molecular dynamics simulations
 
-See the speed comparison below:  
+**See the speed comparison below:**  
 
 <img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/Figures/speed.png" alt="Speed Comparison" width="800">
 
@@ -55,10 +55,10 @@ The NEP89 model is included in the [GPUMD package](https://github.com/brucefan19
 We begin by using NEP89 to calculate the thermal conductivity of monolayer MoS₂. The [`model.xyz`](Out-of-the-box/model.xyz) file for MoS₂ is available in the working directory. 
 Since MoS₂ is a 2D material, the periodic boundary conditions are set as `pbc="T T F"`.
 
-Below is an example `run.in` file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
+Below is an example `run.in`]() file for computing thermal conductivity using the Homogeneous Non-Equilibrium Molecular Dynamics (HNEMD) method:
 
 ```plaintext
-potential      ../nep_0409_virial.txt
+potential      nep89_20250409.txt
 velocity       300
 
 ensemble       npt_scr 300 300 100 0 0 0 20 20 100 1000
@@ -73,7 +73,6 @@ compute_shc    2 500 1 1000 400
 
 dump_position  1000000
 run            10000000          ## 10 ns
-
 ```
 
 For detailed instructions on calculating thermal conductivity using HNEMD, refer to the [GPUMD tutorial on thermal transport](https://github.com/brucefan1983/GPUMD-Tutorials/blob/main/examples/04_Carbon_thermal_transport_nemd_and_hnemd/diffusive/tutorial.ipynb). 
@@ -88,11 +87,47 @@ indicating that NEP89's out-of-the-box performance is suboptimal for MoS₂ ther
 
 To improve accuracy, NEP89 can be fine-tuned using a small set of DFT calculations to generate configurations tailored for MoS₂.
 
+We recommend that readers use the NEP89 model for MD simulations in their own target applications and output atomic trajectories for fine-tuning.
+
+In our case, we are interested in the thermal conductivity of MoS₂ at 300 K. Therefore, we performed an NPT simulation at 300 K.
+
+It is important to note that the sampled configurations must later be used for single-point DFT calculations to obtain reference energies, forces, and stresses. 
+Therefore, the number of atoms in the MD sampling should not be too large, ensuring that DFT calculations remain computationally feasible.
+
+An example [run.in](run-MD-for-fine-tuning/run.in) is shown below:
+
+```plaintext
+potential      nep89_20250409.txt
+velocity       300
+
+ensemble       npt_scr 300 300 100 0 0 0 20 20 100 1000
+time_step      1
+dump_thermo    1000
+dump_position  3000
+run            3000000
+```
+
+Here, we performed a **3 ns NPT simulation** and sampled configurations every **3 ps**, giving a total of **1000 frames**.  
+
+To achieve better sample phase space, we carried out **two independent random MD simulations** and then applied **farthest point sampling (FPS)** to obtain **104 representative frames**.
+
+The FPS procedure was performed using the script [`nep-select-fps.py`](run-MD-for-fine-tuning/nep-select-fps.py).  
+Of course, many other tools can achieve the same purpose.
+
+In this script, **lines 85–87** need to be adjusted as appropriate:
+	
+```python
+    calc = NEP("nep_0409_virial.txt")
+    min_distance = 0.00082
+    get_selected_frames("movie.xyz", calc, min_distance)
+```
+The parameter min_distance defines the distance threshold for selecting configurations, and tuning this value allows users to control the number of sampled frames.
+
 ## 5. Single-point calculation of DFT
 
 
 
-## 6. Direct prediction of the MoS<sub>2</sub>’s configuration by NEP89
+## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
 
 ## 7. Procedure of fine-tuning NEP89 
