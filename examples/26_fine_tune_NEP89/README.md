@@ -240,7 +240,7 @@ An example [`nep.in`](run-fine-tuning/nep.in) file for fine-tuning is given belo
 #type       89 H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Ac Th Pa U Np Pu 
 #prediction 1
 
-# for fine-tuning
+# For fine-tuning
 fine_tune  nep89_20250409.txt nep89_20250409.restart
 type       2  Mo  S
 # These cannot be changed:
@@ -263,8 +263,23 @@ save_potential 1000 0
 generation 11000
 ```
 
+**Key notes:**
+- `type`: **list of chemical elements** included in the training/fine-tuning dataset. If your system has other elements, modify this line accordingly.  
+- `generation 11000`: we performed **11,000 fine-tuning steps** in total.  
+- `save_potential 1000 0`: outputs an updated potential model every **1,000 steps**.  
+- The modifiable parameters can be customized by users to suit their specific requirements (see `These can be changed:`).
 
+**General guidelines:**
+- Larger fine-tuning datasets typically require more steps.  
+- Excessive fine-tuning should be avoided to prevent **catastrophic forgetting**.  
 
+After fine-tuning, the script [`Plot_RMSE.py`](run-fine-tuning/Plot_RMSE.py) can be used to **visualize the root mean square error (RMSE) evolution** (for fine-tuned 11000 steps).  
+
+<img src="https://github.com/Tingliangstu/GPUMD-Tutorials/blob/main/examples/26_fine_tune_NEP89/run-fine-tuning/RMSE.png" alt="RMSE" width="800">
+
+In our tests, we found that the model fine-tuned for **10,000 steps** gave the best agreement with reference values in thermal conductivity calculations of MoS₂ (as also discussed in the [NEP89 manuscript](https://arxiv.org/pdf/2504.21286)).  
+
+Readers may also test the relationship between the number of fine-tuning steps and the resulting physical properties for their own systems.
 
 ## 8. Re-calculation of the thermal conductivity of MoS<sub>2</sub> using the fine-tuned model
 
