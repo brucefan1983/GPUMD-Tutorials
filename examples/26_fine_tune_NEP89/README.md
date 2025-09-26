@@ -129,6 +129,45 @@ The parameter min_distance defines the distance threshold for selecting configur
 
 ## 6. Direct prediction of the configuration of MoS<sub>2</sub> by NEP89
 
+Once `train.xyz` has been prepared, it is useful to first test **NEP89's predictive performance** before fine-tuning.  
+
+An example [`nep.in`](prediction/nep.in) file is given below:
+
+```plaintext
+type       89 H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Ac Th Pa U Np Pu 
+version    4
+zbl        2
+cutoff     6 5
+n_max      4 4
+basis_size 8 8
+l_max      4 2 1
+neuron     80
+lambda_1   0
+lambda_e   1
+lambda_f   1
+lambda_v   1
+batch      5000
+prediction 1
+population 10
+generation 1000
+
+
+Compared to the standard NEP input, the **key difference** is the addition of:
+
+```plaintext
+
+   prediction 1
+   
+```
+
+This enables **prediction mode**.
+
+The script [`Plot_prediction.py`](prediction/Plot_prediction.py) can then be used to **visualize the prediction results**.  
+This plotting script is adapted from [Zihan Yan](https://github.com/zhyan0603/GPUMDkit/blob/main/Scripts/plt_scripts/plt_nep_prediction_results.py).
+
+The prediction results for **MoS₂** are shown below:
+
+
 
 ## 7. Procedure of fine-tuning NEP89 
 
