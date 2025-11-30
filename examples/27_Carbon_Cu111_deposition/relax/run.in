@@ -1,0 +1,6 @@
+potential nep.txt
+velocity 300
+time_step 1
+ensemble npt_mttk temp 300 300 iso 0.0 0.0
+dump_restart 10000
+run 30000
