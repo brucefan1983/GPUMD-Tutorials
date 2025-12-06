@@ -1,8 +1,14 @@
 # GPUMD-Tutorials
 This repo contains various tutorials and examples using the [GPUMD package](https://github.com/brucefan1983/GPUMD) and related tools.
 
-## List of examples
+## Benchmark examples
 
+| folder                                     | creator       | description                                        |
+| ---------------------------------------    | ------------- | ---------------------------------------------------|
+| [benchmark/01_CuMoTaVW](benchmark/01_CuMoTaVW)      | Rui Zhao | polycrystalline CuMoTaVW alloy with NEP89 model  |
+
+
+## Tutorial examples
 
 | folder                                     | creator       | description                                        |
 | ---------------------------------------    | ------------- | ---------------------------------------------------|
@@ -32,3 +38,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [24_Ionic_Conductivity](examples/24_Ionic_Conductivity) | Zihan Yan | Ionic conductivity of cubic Li<sub>7</sub>La<sub>3</sub>Zr<sub>2</sub>O<sub>12</sub> |
 | [25_lattice_dynamics_kappa](examples/25_lattice_dynamics_kappa) | Zezhu Zeng | Lattice dynamics for PbTe |
 | [26_fine_tune_NEP89](examples/26_fine_tune_NEP89) | Ting Liang | Fine-tuned NEP89 model for calculating the thermal conductivity of MoS<sub>2</sub> |
+| [27_Carbon_Cu111_deposition](examples/27_Carbon_Cu111_deposition) | Jiahui Liu | Depositing C atoms onto a relaxed Cu(111) surface. |

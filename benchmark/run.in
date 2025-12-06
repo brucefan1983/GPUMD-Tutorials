@@ -1,0 +1,8 @@
+potential   nep89_20250409.txt
+velocity    300
+
+ensemble    npt_scr 300 300 100 0 0 0 100 100 100 1000
+time_step   4
+dump_thermo 100
+run         10000
+
