@@ -1,0 +1,10 @@
+potential      ./nep.txt 0
+velocity       300
+
+ensemble       heat_nhc 300 100 0 1 2         # 通过heat热浴控温
+time_step      0.5          # MD的时间步长
+compute        0 1000 10 temperature
+fix            0            # “最底层原子冻结”，吸收多余动能，固定结构
+dump_position  1000         # 输出动力学过程，每1000步
+dump_restart   10000        # 保留关键帧，每10000步
+run            20000        # 总模拟步数

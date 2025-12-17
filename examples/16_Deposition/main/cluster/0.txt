@@ -1,3 +1,0 @@
-#Atomic information needs to be set in the following format(Annotation needs to be deleted):
-$element     $x-direction    $y-direction    $z-direction     $mass
-...
