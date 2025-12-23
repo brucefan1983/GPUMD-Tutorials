@@ -37,14 +37,17 @@ def build_dep_sub(dep_sub):
     a_type = dep_sub.get('a_type',None)                      # Atomic species
     position = dep_sub.get('position',None)                  # XYZ coordinates
     m = dep_sub.get('mass',None)                             # Atomic masses
-    name = dep_sub.get('name', 'model.xyz')                  # Output file name
+    out_file = dep_sub.get('out_file', 'model.xyz')          # Output file name
     Cell = dep_sub.get('Cell', [[1,0,0],[0,1,0],[0,0,1]])    # Simulation-cell lattice 
     z = dep_sub.get('z', Cell[2][2])                         # Cell length along z 
     vacuum = dep_sub.get('vacuum', 5)                        # Vacuum thickness added at the bottom of z 
     fix = dep_sub.get('fix', 10)                             # Thickness of the fixed layer  
     heat_g = dep_sub.get('heat_g', 0.5)                      # Fraction of atoms in the hot-bath group 
-    im_file = dep_sub.get('im_file',None)                    # Input file name 
-    defect_p = dep_sub.get('defect_p', 0.2)                  # Surface-layer defect ratio
+    im_file = dep_sub.get('im_file',None)                    # Input file name
+    im_file_type = dep_sub.get('im_file_type','exyz')        # Input file type('exyz','lammps_data','POSCAR')
+    POS_mass = dep_sub.get('POS_mass')                       # Back-fill missing mass data in the POSCAR file
+    lamm_type = dep_sub.get('lammps_type')                   # Back-fill missing atom type data in the lammps file
+    defect_p = dep_sub.get('defect_p', 0)                    # Surface-layer defect ratio
     defect_l = dep_sub.get('defect_l', 5)                    # Thickness of the surface layer  
     # If no input file is provided, build the substrate from the supplied list.
     if im_file == None:
@@ -80,38 +83,122 @@ def build_dep_sub(dep_sub):
                 if choice == 1:
                     position[i][2] = position[i][2] + vacuum
                     tem = '%s %.6f %.6f %.6f %s 0 0 0 %s\n' % (a_type[i],position[i][0],position[i][1],position[i][2],m,group) ; list_tem.append(tem)
-            list_tem[0] = '%i\n' % (len(list_tem)-2)
     else:
         with open('%s' % im_file,'r') as file:
             lines = file.readlines()
-        a = lines[1].split("Lattice=") ; b = a[1].split("\"") ; c = b[1].split(" ")
-        x = float(c[0]) ; y = float(c[4]) ; z = float(c[8])
-        list_tem = ['0\n'] ; listx = [] ; listy = [] ; listz = []
-        list_tem.append('triclinic=F pbc="T T F" Lattice="%.6f 0 0 0 %.6f 0 0 0 %.6f" Properties=species:S:1:pos:R:3:mass:R:1:vel:R:3:group:I:1\n' % (x,y,z))
-        # Read files and set x, y, z bounds
-        for line in lines[2:]:
-            tem = line.split() ; listx.append(float(tem[1])) ; listy.append(float(tem[2])) ; listz.append(float(tem[3]))
-        z_max = max(listz) ; z_min = min(listz) ; y_max = max(listy) ; y_min = min(listy) ; x_max = max(listx) ; x_min = min(listx)
-        # Group select
-        for i in range(len(listx)):
-            if listz[i]-z_min <= fix:
-                group = 0
-            elif (listy[i]-y_min)/y_max <= heat_g:
-                group = 1
-            else:
-                group = 2
-            if listz[i] < z_max - defect_l:
-                line = lines[i+2].split() ; line[3] = float(line[3]) + vacuum
-                tem = '%s %s %s %s %s 0 0 0 %s\n' % (line[0],line[1],line[2],line[3],line[4],group) ; list_tem.append(tem)
-            else:
-                # Set defects
-                choice = random.choices([0, 1],weights = [defect_p,1 - defect_p])[0]
-                if choice == 1:
+        list_tem = ['0\n']
+        if im_file_type == 'exyz':
+            a = lines[1].split("Lattice=") ; b = a[1].split("\"") ; c = b[1].split(" ")
+            x = float(c[0]) ; y = float(c[4]) ; z = float(c[8])
+            listx = [] ; listy = [] ; listz = []
+            list_tem.append('triclinic=F pbc="T T F" Lattice="%.6f 0 0 0 %.6f 0 0 0 %.6f" Properties=species:S:1:pos:R:3:mass:R:1:vel:R:3:group:I:1\n' % (x,y,z))
+            # Read files and set x, y, z bounds
+            for line in lines[2:]:
+                tem = line.split() ; listx.append(float(tem[1])) ; listy.append(float(tem[2])) ; listz.append(float(tem[3]))
+            z_max = max(listz) ; z_min = min(listz) ; y_max = max(listy) ; y_min = min(listy) ; x_max = max(listx) ; x_min = min(listx)
+            # Group select
+            for i in range(len(listx)):
+                if listz[i]-z_min <= fix:
+                    group = 0
+                elif (listy[i]-y_min)/y_max <= heat_g:
+                    group = 1
+                else:
+                    group = 2
+                if listz[i] < z_max - defect_l:
                     line = lines[i+2].split() ; line[3] = float(line[3]) + vacuum
                     tem = '%s %s %s %s %s 0 0 0 %s\n' % (line[0],line[1],line[2],line[3],line[4],group) ; list_tem.append(tem)
-        list_tem[0] = '%i\n' % (len(list_tem)-2)
+                else:
+                    # Set defects
+                    choice = random.choices([0, 1],weights = [defect_p,1 - defect_p])[0]
+                    if choice == 1:
+                        line = lines[i+2].split() ; line[3] = float(line[3]) + vacuum
+                        tem = '%s %s %s %s %s 0 0 0 %s\n' % (line[0],line[1],line[2],line[3],line[4],group) ; list_tem.append(tem)
+        elif im_file_type == 'POSCAR':
+            listxyz = [[],[],[]] ; a = 0
+            for line in lines:
+                if line.strip() != '' and line.strip()[0] != '#':
+                    a = a + 1
+                    if a == 2:
+                        fac = float(line)
+                    elif a >=3 and a <= 5:
+                        xyz = line.split()
+                        for i in range(3):
+                            listxyz[a-3].append(float(xyz[i])*fac)
+                    elif a == 6:
+                        tem = 'triclinic=F pbc="T T F" Lattice="%s %s %s %s %s %s %s %s %s" Properties=species:S:1:pos:R:3:mass:R:1:vel:R:3:group:I:1\n' % (listxyz[0][0],listxyz[0][1],listxyz[0][2],listxyz[1][0],listxyz[1][1],listxyz[1][2],listxyz[2][0],listxyz[2][1],listxyz[2][2])
+                        list_tem.append(tem)
+                        spi = line.split() ; lists = []
+                        for i in range(len(spi)):
+                            if '#' not in spi[i]:
+                                lists.append(spi[i])
+                            else:
+                                break
+                    elif a == 7:
+                        num = line.split() ; listnum = []
+                        for i in range(len(num)):
+                            if '#' not in num[i]:
+                                for j in range(int(num[i])):
+                                    listnum.append(lists[i])
+                            else:
+                                break
+                    elif a == 8:
+                        if 'D' in line:
+                            coor = 0
+                        if 'C' in line:
+                            coor = 1
+                    elif a >= 9 :
+                        pos = line.split() ; i = a-9
+                        if coor == 1:
+                            x0 = pos[0] ; y0 = pos[1] ; z0 = pos[2]
+                        elif coor == 0:
+                            x0 = float(pos[0])*listxyz[0][0] + float(pos[1])*listxyz[1][0] + float(pos[2])*listxyz[2][0]
+                            y0 = float(pos[0])*listxyz[0][1] + float(pos[1])*listxyz[1][1] + float(pos[2])*listxyz[2][1]
+                            z0 = float(pos[0])*listxyz[0][2] + float(pos[1])*listxyz[1][2] + float(pos[2])*listxyz[2][2]
+                        for j in range(len(POS_mass[0])):
+                            if listnum[i] == POS_mass[0][j]:
+                                mass = POS_mass[1][j]
+                        list_tem.append('%s %.6f  %.6f  %.6f %s 0 0 0 0\n' % (listnum[i],x0,y0,z0,mass))
+        elif im_file_type == 'lammps_data':
+            a = 0
+            for line in lines:
+                a = a + 1
+                if '#' in line:
+                    line = line.split('#')[0]
+                if 'atoms' in line:
+                    num = int(line.split()[0])
+                elif 'atom types' in line:
+                    spe = int(line.split()[0])
+                elif 'xhi' in line:
+                    b = line.split() ; x_min = float(b[0]) ; x_max = float(b[1]) ; x0 = x_max - x_min
+                elif 'yhi' in line:
+                    b = line.split() ; y_min = float(b[0]) ; y_max = float(b[1]) ; y0 = y_max - y_min
+                elif 'zhi' in line:
+                    b = line.split() ; z_min = float(b[0]) ; z_max = float(b[1]) ; z0 = z_max - z_min
+                elif 'Masses' in line:
+                    tem = 'triclinic=F pbc="T T F" Lattice="%s 0 0 0 %s 0 0 0 %s" Properties=species:S:1:pos:R:3:mass:R:1:vel:R:3:group:I:1\n' % (x0,y0,z0)
+                    list_tem.append(tem)
+                    tem_a = a ; listm = [[],[]]
+                    while lines[tem_a].strip() =='' or lines[tem_a].strip()[0] == '#':
+                        tem_a = tem_a + 1
+                    for i in range(spe):
+                        b = lines[tem_a+i].split()
+                        listm[0].append(b[0]) ; listm[1].append(b[1])
+                elif 'Atoms' in line:
+                    tem_a = a
+                    while lines[tem_a].strip() =='' or lines[tem_a].strip()[0] == '#':
+                        tem_a = tem_a + 1
+                        for i in range(num):
+                            b = lines[tem_a+i].split()
+                            for j in range(len(listm[0])):
+                                if b[1] == listm[0][j]:
+                                    tem_m = listm[1][j]
+                                if int(b[1]) == int(lamm_type[0][j]):
+                                    lamm_type0 = lamm_type[1][j]
+                            tem_x = float(b[2]) - x_min ; tem_y = float(b[3]) - y_min ; tem_z = float(b[4]) - z_min
+                            list_tem.append('%s %s %s %s %s 0 0 0 0\n' % (lamm_type0,tem_x,tem_y,tem_z,tem_m))
     # write file
-    with open('%s' % name,'w') as file:
+    with open('%s' % out_file,'w') as file:
+        list_tem[0] = '%i\n' % (len(list_tem)-2)
         for line in list_tem:
             file.writelines(line)
 
@@ -149,14 +236,10 @@ def para(params):
     param['group'] = params.get('group', 3)                                     # Group of deposition atoms (corresponding to group in GPUMD)
     param['sto_ratio'] = params.get('sto_ratio')                                # Atomic ratio for multi-species deposition [[atom1, atom2], [2, 3]]
     param['sto_standard'] = params.get('sto_standard', 0.5)
-    param['prob'] = params.get('prob', 0)                                       # Atom-addition mode:
-                                                                                # 0: uniform deposition  
-                                                                                # 1: probability-weighted deposition with fixed surface-layer thickness  
-                                                                                # 2: probability-weighted deposition with dynamically calculated surface-layer thickness
-    param['mash_xy'] = params.get('mash_xy', [10, 10])                          # Number of x, y-axis grids for probabilistic deposition (prob = 1, 2)
-    param['delta_z'] = params.get('delta_z', 5)                                 # z-axis grid thickness for probabilistic deposition (prob = 1, 2)
-    param['prob_h'] = params.get('prob_h', param['delta_z'])                    # Surface layer thickness set when adding atoms with prob = 1
-    param['delta_z_cut'] = params.get('delta_z_cut', 0.1)                       # Defect ratio used to define the surface layer for probabilistic deposition (prob = 1, 2)
+    param['prob'] = params.get('prob', 0)                                       # Atom-addition mode: 0: uniform deposition ; 1: probability-weighted deposition
+    param['mash_xy'] = params.get('mash_xy', [10, 10])                          # Number of x, y-axis grids for probabilistic deposition (prob = 1)
+    param['delta_z'] = params.get('delta_z', 5)                                 # z-axis grid thickness for probabilistic deposition (prob = 1)
+    param['density_threshold'] = params.get('density_threshold', 0.9)           # Defect ratio used to define the surface layer for probabilistic deposition (prob = 1, 2)
 
     # Output configuration parameters
     print('Total cycle : %s' % param['cycle'])
@@ -180,9 +263,7 @@ def para(params):
         print('Atom clusters will be uniformly deposited\n')
     else:
        print('Atomic clusters tend to preferentially deposited into vacancies')
-       print('Threshold of surface layer vacancy defect: %s' % (1-param['delta_z_cut']))
-       if param['prob'] == 1:
-        print('Thickness of surface layer: %s\n' % param['prob_h'])
+       print('Threshold of surface layer vacancy defect: %.2f' % (1-param['density_threshold']))
     # For multi-species deposition
     if param['sto_ratio'] != None:
         param['list_c'] = multi_species()
@@ -208,7 +289,9 @@ def multi_species():
 
 # Main loop procedure - core processing logic
 def main_dep():
-    import subprocess # 
+    import subprocess
+    import time
+    total_time = 0
     # Parameters used by this function
     cycle = param['cycle'] ; number = param['number'] ; path = param['path']
     # Initialize count.txt for storing per-cycle atom deposition counts
@@ -216,6 +299,7 @@ def main_dep():
         file.writelines('#Atoms saved in every cycle:\n')
     #cycle
     for i in range(cycle):
+        start_time = time.time()
         print('begin %s cycle' % (i+1))
         param['tem_cycle'] = i+1
         with open('./restart.xyz','r') as file:
@@ -230,9 +314,21 @@ def main_dep():
             for line in lines2:
                 file.writelines(line)
         with open('./output', 'w') as file:
-            subprocess.run([path], stdout=file, stderr=subprocess.STDOUT)
+            result = subprocess.run([path], stdout=file, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print([l.strip() for l in open('./output', 'r') if l.strip()][-1])
+                raise RuntimeError('Improper invocation of GPUMD detected. Please check your input file configuration; specific error details can be found in the "output" file.')
         zdir()     # Remove atoms that have not yet deposited
-    print('Calculation finished')
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        total_time = elapsed_time + total_time
+        with open('./output','r') as file:
+            lines_t = file.readlines()
+        for line_t in lines_t:
+            if 'Time used =' in line_t:
+                print('Cycle GPUMD runtime: %.2fs' % float(line_t.split()[3]))
+        print('Cycle runtime: %.2fs' % elapsed_time)
+    print('Calculation finished\nTotal time: %.2fs' % total_time)
 
 # Initialize positions and velocities of atoms introduced in this deposition cycle
 def add_atom():
@@ -362,9 +458,8 @@ def add_atom():
 # For non-uniform deposition, identify the target layer position
 def z_pos_uni():
     # Parameters used by this function
-    param['tem_cycle'] = 0
-    listmesh = [] ; listmesh_d = [] ; mash_x = param['mash_xy'][0] ; mash_y = param['mash_xy'][1] ; delta_z = param['delta_z'] ; delta_z_cut = param['delta_z_cut'] ; h_max = param['h_range'][1] 
-    x_max = param['x_range'][1] ; y_max = param['y_range'][1] ; x_min = param['x_range'][0] ; y_min = param['y_range'][0] ; h_cutoff = param['h_cutoff'] ; prob = param['prob'] ; prob_h = param['prob_h']
+    listmesh = [] ; listmesh_d = [] ; mash_x = param['mash_xy'][0] ; mash_y = param['mash_xy'][1] ; delta_z = param['delta_z'] ; delta_z_cut = param['density_threshold'] ; h_max = param['h_range'][1] 
+    x_max = param['x_range'][1] ; y_max = param['y_range'][1] ; x_min = param['x_range'][0] ; y_min = param['y_range'][0] ; h_cutoff = param['h_cutoff'] ; prob = param['prob']
     dx = (x_max - x_min)/mash_x ; dy = (y_max - y_min)/mash_y # Define minimum grid spacing in x and y directions
     for i in range(mash_x):
         for j in range(mash_y):
@@ -380,6 +475,8 @@ def z_pos_uni():
         if z_coord <= h_cutoff:
             tem = int((z_coord-min_z)/delta_z) ; listz_num[tem] = listz_num[tem] + 1
     norma = listz_num[0]
+    if norma == 0:
+        norma == listz_num[1]
     for i in range(len(listz_num)):
         listz_num[i] = listz_num[i]/norma
     uni = 0
@@ -388,16 +485,11 @@ def z_pos_uni():
             max_z = min_z + delta_z*(i+1) ; uni = 1
             break
     if uni == 0: # Donot hits the uniform-deposition threshold
-        tem_cycle = param['tem_cycle'] ; prob = 0
+        prob = 0 ; max_z = h_cutoff
     for i in range(len(listz)):
-        if prob == 1:
-            if listz[i] >= max_z - prob_h and listz[i] <= max_z:
-                numx = int((listxy[0][i] - x_min)/dx) ; numy = int((listxy[1][i] - y_min)/dy)
-                temxy = numx*mash_y + numy ; listmesh[temxy] = listmesh[temxy] + 1
-        elif prob == 2 or prob == 0:
-            if listz[i] >= max_z - delta_z and listz[i] <= h_max:
-                numx = int((listxy[0][i] - x_min)/dx) ; numy = int((listxy[1][i] - y_min)/dy)
-                temxy = numx*mash_y + numy ; listmesh[temxy] = listmesh[temxy] + 1
+        if listz[i] >= max_z - delta_z and listz[i] <= h_max:
+            numx = int((listxy[0][i] - x_min)/dx) ; numy = int((listxy[1][i] - y_min)/dy)
+            temxy = numx*mash_y + numy ; listmesh[temxy] = listmesh[temxy] + 1
     max_atom = max(listmesh) ; add_atom = max_atom*len(listmesh) - sum(listmesh)
     if add_atom > 0:
         for i in range(len(listmesh)):
@@ -405,7 +497,6 @@ def z_pos_uni():
     else:
         for i in range(len(listmesh)):
             listmesh[i] = 1/len(listmesh)
-            tem_cycle = param['tem_cycle']
     return [listmesh_d, listmesh, dx, dy, max_z]
 
 # Remove flying atoms, update ‘restart.xyz’, and log the deposition statistics.
@@ -416,8 +507,8 @@ def zdir():
         lines = file.readlines()
         list1 = ['0\n'] ; list1.append(lines[1])
         for line in lines[2:]:
-            a = line.split() ; z = float(a[3])
-            if z < h_c:
+            a = line.split() ; z = float(a[3]) ; vz = float(a[7])
+            if z < h_c or vz < 0:
                 list1.append(line)
     list1[0] = '%i\n' % (len(list1)-2)
     with open('./restart.xyz','w') as file:
@@ -436,19 +527,19 @@ def zdir():
         file.writelines(list2)
 
 # Compute layer-resolved density along z-axis for the deposited structure
-def density(dz, z_min=None, z_max=None, name_i = 'restart.xyz', name_o='density.txt'):
+def density(Nz=1, z_min=None, z_max=None, name_i = 'restart.xyz', name_o='density.txt'):
     with open('%s' % name_i,'r') as file:
         lines = file.readlines()
     a = lines[1].split("Lattice=") ; b = a[1].split("\"") ; c = b[1].split(" ")
     x_max = float(c[0]) ; y_max = float(c[4]) ; x_min = 0 ; y_min = 0
     if z_min == None:
-        z_min = param['h_range'][0]
+        z_min = 0
     if z_max == None:
-        z_max = param['h_range'][1]
+        z_max = param['z']
         x_max = param['x_range'][1] ; y_max = param['y_range'][1] ; x_min = param['x_range'][0] ; y_min = param['y_range'][0]
     listz = [] ; listm = [] ; Na = 6.02*10**23 # 1 Å³ = 10⁻²⁴ cm³; Na: Avogadro's number
-    z0 = (z_max-z_min)/dz ; V = (x_max-x_min)*(y_max-y_min)*z0
-    for i in range(dz):
+    z0 = (z_max-z_min)/Nz ; V = (x_max-x_min)*(y_max-y_min)*z0
+    for i in range(Nz):
         listz.append(0) ; listm.append([])
     for line in lines[2:]:
         b = line.split() ; z = float(b[3])
@@ -456,9 +547,9 @@ def density(dz, z_min=None, z_max=None, name_i = 'restart.xyz', name_o='density.
             m = float(b[4]) ; tem = int((z-z_min)/z0)
             listz[tem] = listz[tem] + 1 ; listm[tem].append(m)
     with open('%s' % name_o,'w') as file:
-        for i in range(dz):
+        for i in range(Nz):
             tem_num = listz[i]/V ; tem_mass = sum(listm[i])*10**24/V/Na # density1: atoms/Å³; density2: g/cm³
-            tem = '%s    %.4f    %.4f\n' % (z_min+z0*(i+1),tem_num,tem_mass)
+            tem = '%s    %.4f    %.4f\n' % (z_min+z0*(i+0.5),tem_num,tem_mass)
             file.writelines(tem)
 def atom_num():
     with open('count.txt','r') as file:
