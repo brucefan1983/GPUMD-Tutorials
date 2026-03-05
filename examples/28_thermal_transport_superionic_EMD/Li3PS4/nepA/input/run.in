@@ -1,0 +1,25 @@
+
+potential       ./nep.txt
+time_step       1
+velocity        650
+
+
+# NPT
+ensemble        npt_scr 650 650 100 0 0 0 0.0 0.0 0.0 50.0 50.0 50.0 25.0 25.0 25.0 1000
+run             200000
+
+ensemble        nvt_bdp 650 650 100
+dump_thermo     1000
+dump_restart    20000
+run             200000
+
+# Compute some observables
+ensemble        nvt_bdp 650 650 100
+dump_thermo     1000
+dump_exyz       2000 1 1 1
+dump_restart    20000
+compute         0 5 1 jk jp momentum
+
+run             20000000
+
+        

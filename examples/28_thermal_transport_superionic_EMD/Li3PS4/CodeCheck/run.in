@@ -1,0 +1,18 @@
+
+potential       ./nep.txt
+time_step       1
+velocity        650
+
+
+# NPT
+
+ensemble        nvt_bdp 650 650 100
+run             200000
+
+
+ensemble        nvt_bdp 650 650 100
+compute         0 1 1 jk jp momentum
+compute_hac     1 10000 1
+run             200000
+
+        

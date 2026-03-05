@@ -1,0 +1,2 @@
+Temperature kappa_J_J_avg±error, kappa_Jv_Jv_avg±error, kappa_Jk_Jk_avg±error, kappa_Jv_Jk_avg±error, kappa_J_v_avg±error, kappa_v_v_avg±error, kappa_total±error
+650,1.202203e+00±2.820911e-02, 1.402382e+00±3.357792e-02, 3.430007e+00±8.741511e-02, -1.827472e+00±5.399720e-02, 3.425689e-08±1.061481e-09, 1.612357e-15±4.132320e-17, 4.741550e-01±5.637217e-02
