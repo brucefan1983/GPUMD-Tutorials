@@ -1,9 +1,9 @@
 # thermal conductivity of Ar–Kr binary mixture
 
 ## Files
- - */inputfile: structure, force field, task job.
- - */write_input*.py: batch generate and execute EMD or HNEMD tasks.
- - */postprocess/*.py: script for postprocess.
+ - `*/inputfile`: structure, force field, task job.
+ - `*/write_input*.py`: batch generate and execute EMD or HNEMD tasks.
+ - `*/postprocess/*.py`: script for postprocess.
 
 ## How to run
 ### EMD method
@@ -11,11 +11,11 @@ Enter the `emd` folder:
 ```shell
 1. cd emd
 ```
-Execute write_input.py to generate a series of EMD task (`./md/md-0`, `./md/md-1`, ...) and  submit them automatically, the number of task is controled by `md_number` in `write_input.py`:
+Execute `write_input.py` to generate a series of EMD tasks (`./md/md-0`, `./md/md-1`, ...) and  submit them automatically. The number of task is controled by `md_number` in `write_input.py`.
 ```shell
 2. python write_input.py
 ```
-When the tasks finishing, enter `./postprocess` and then execute `Correlation.py` to compute the correlation and interal. We recommend using GPU to accelerate the computation. The parameters need to be modified in `Correlation.py` includes `device`,`temperature`,`time_step`,`volume`,`group_num`,`sampling_interval`,`correlation_steps`,`output_interval`,`runs`.
+When the tasks finishing, enter `./postprocess` and then execute `Correlation.py` to compute the correlation and interal. We recommend using GPU to accelerate the computation. The parameters need to be modified in `Correlation.py` includes device paramter `device` and GPUMD run.in's paramters `temperature`,`time_step`,`volume`,`group_num`,`sampling_interval`,`correlation_steps`,`output_interval`,`runs`.
 ```shell
 3. cd postprocess
 4. python Correlation.py

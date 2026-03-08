@@ -1,0 +1,13 @@
+#/bin/bash
+#BSUB -q 723090ib
+#BSUB -gpu "num=1"
+#BSUB -n 1
+#BSUB -J md
+#BSUB -o out
+#BSUB -e err
+
+
+module purge
+module load gcc/7.4.0 ips/2018u4 cuda/12.0.0
+/fs08/home/js_liangzx/apps/GPUMD-4.2/src/gpumd > log
+
