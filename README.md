@@ -40,3 +40,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [26_fine_tune_NEP89](examples/26_fine_tune_NEP89) | Ting Liang | Fine-tuned NEP89 model for calculating the thermal conductivity of MoS<sub>2</sub> |
 | [27_Carbon_Cu111_deposition](examples/27_Carbon_Cu111_deposition) | Jiahui Liu | Depositing C atoms onto a relaxed Cu(111) surface. |
 | [28_thermal_transport_superionic_EMD](examples/28_thermal_transport_superionic_EMD) | Wenjiang Zhou | Thermal transport in superionic Li3PS4 using EMD. |
+| [29_thermal_transport_multicomponent_HNEMDEC](examples/29_thermal_transport_multicomponent_HNEMDEC) | Zhixin Liang | HNEMDEC method for multicomponent system. |
