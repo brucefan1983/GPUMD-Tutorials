@@ -2,7 +2,7 @@
 
 ## Files
  - `*/inputfile`: structure, force field, task job.
- - `*/write_input*.py`: batch generate and execute EMD or HNEMD tasks.
+ - `*/write_input*.py`: batch generate and execute EMD or HNEMDEC tasks.
  - `*/postprocess/*.py`: script for postprocess.
 
 ## How to run
@@ -26,12 +26,12 @@ Finally, execute `kappa.py` to compute thermal conductivity:
 ```shell
 5. python kappa.py
 ```
-### HNEMD method
-Enter the `hnemd` folder:
+### HNEMDEC method
+Enter the `hnemdec` folder:
 ```shell
-1. cd hnemd
+1. cd hnemdec
 ```
-Exectute `write_input0.py` and `write_input1.py` to generate HNEMD tasks (`./md0/md-*` and `./md1/md-*`). One needs to modify `md_number` and `fe` in `write_input*.py` to control task number and driving force. In `write_input0.py`, the driving force is thermal driving force, dissipative flux is equilvalent to the heat flux, so we can compute the couple between heat flux and any other flux. In `write_input1.py`, the driving force is diffusive driving force, the dissipative flux is equilvalent to 1st element's momentum (Ar's momentum in this example). Similarly, we can compute the couple between 1st element's momentum and any other flux.
+Exectute `write_input0.py` and `write_input1.py` to generate HNEMDEC tasks (`./md0/md-*` and `./md1/md-*`). One needs to modify `md_number` and `fe` in `write_input*.py` to control task number and driving force. In `write_input0.py`, the driving force is thermal driving force, dissipative flux is equilvalent to the heat flux, so we can compute the couple between heat flux and any other flux. In `write_input1.py`, the driving force is diffusive driving force, the dissipative flux is equilvalent to 1st element's momentum (Ar's momentum in this example). Similarly, we can compute the couple between 1st element's momentum and any other flux.
 ```shell
 2. python write_input0.py
 3. python write_input1.py
@@ -42,4 +42,4 @@ Finally, enter `postprocess` and execute `plot-hnemd.py` to plot the onsager coe
 ```
 
 ## Reference
-Under revirew.
+Zhixin Liang et al. Under revirew.
