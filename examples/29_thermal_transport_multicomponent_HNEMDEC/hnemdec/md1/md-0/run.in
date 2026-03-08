@@ -1,0 +1,14 @@
+
+potential   ./lj.txt
+velocity    115
+
+ensemble nvt_nhc 115 115 100
+dump_thermo 1000
+time_step 1
+run 10000
+
+ensemble nvt_nhc 115 115 100
+dump_thermo 1000
+time_step 1
+compute_hnemdec 1 10 0.002 0 0
+run 500000
