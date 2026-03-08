@@ -1,4 +1,4 @@
-# thermal conductivity of Ar–Kr binary mixture
+# Thermal conductivity of Ar–Kr binary mixture
 
 ## Files
  - `*/inputfile`: structure, force field, task job.
@@ -15,7 +15,9 @@ Execute `write_input.py` to generate a series of EMD tasks (`./md/md-0`, `./md/m
 ```shell
 2. python write_input.py
 ```
-When the tasks finishing, enter `./postprocess` and then execute `Correlation.py` to compute the correlation and interal. We recommend using GPU to accelerate the computation. The parameters need to be modified in `Correlation.py` includes device paramter `device` and GPUMD run.in's paramters `temperature`,`time_step`,`volume`,`group_num`,`sampling_interval`,`correlation_steps`,`output_interval`,`runs`.
+When the tasks finishing, enter `./postprocess` and then execute `Correlation.py` to compute the correlation and interal. We recommend using GPU to accelerate the computation. The parameters need to be modified in `Correlation.py` includes: 
+ - device paramter `device`
+ - GPUMD run.in's paramters `temperature`,`time_step`,`volume`,`group_num`,`sampling_interval`,`correlation_steps`,`output_interval`,`runs`.
 ```shell
 3. cd postprocess
 4. python Correlation.py
