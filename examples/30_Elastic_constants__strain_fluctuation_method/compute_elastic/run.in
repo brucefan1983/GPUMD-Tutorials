@@ -1,0 +1,5 @@
+potential   ../Si_2022_NEP3_4body.txt
+
+minimize fire 1.0e-5 1000 1
+compute_elastic 0.01 cubic
+
