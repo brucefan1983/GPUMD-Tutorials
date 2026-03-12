@@ -1,2 +1,4 @@
-potential       ../../potentials/tersoff/Si_Fan_2019.txt
-compute_phonon  5 0.005 # in units of A
+replicate       9 10 11
+potential        ../../../potentials/tersoff/Si_Fan_2019.txt
+compute_phonon  0.005 # in units of A
+

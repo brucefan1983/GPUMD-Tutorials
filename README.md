@@ -17,7 +17,7 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [03_Carbon_thermal_transport_emd](examples/03_Carbon_thermal_transport_emd)            | Zheyong Fan  | Thermal transport in graphene from EMD |
 | [04_Carbon_thermal_transport_nemd_and_hnemd](examples/04_Carbon_thermal_transport_nemd_and_hnemd) | Zheyong Fan  | Thermal transport in graphene from NEMD and NEMD |
 | [05_Carbon_phonon_vibration_viewer](examples/05_Carbon_phonon_vibration_viewer)          | Ting Liang    | Visualizing the phonon modes in a type of diamond nanowire. |
-| [06_Silicon_phonon_dispersion](examples/06_Silicon_phonon_dispersion)               | Zheyong Fan    | Phonon dispersions of silicon.  |
+| [06_Silicon_phonon_dispersion](examples/06_Silicon_phonon_dispersion)               | Benrui Tang     | Phonon dispersions of silicon.  |
 | [07_Silicon_thermal_expansion](examples/07_Silicon_thermal_expansion)               | Zheyong Fan      | Thermal expansion of silicon based on classical MD. |
 | [08_Silicon_melt](examples/08_Silicon_melt)                            | Zheyong Fan   |  Melting point of silicon from two-phase method. |
 | [09_Silicon_diffusion](examples/09_Silicon_diffusion)                      | Zheyong Fan   |  Diffusion coefficient of liquid silicon from VAC and MSD. |
