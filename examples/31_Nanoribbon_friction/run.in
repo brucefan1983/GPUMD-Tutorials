@@ -1,0 +1,10 @@
+potential gr_bn_mos2.ilp map.in
+velocity 0.00001
+
+ensemble      heat_lan 0.0000000001 1000 0 0 1
+time_step     1
+add_spring    ghost_atom 1 1 0.00001 0 0 decouple 0.625 0 0 0 0 0
+fix           0
+dump_thermo   5000
+dump_exyz     2000 1 1 1
+run           2000000
