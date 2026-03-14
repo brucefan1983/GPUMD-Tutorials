@@ -42,3 +42,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [28_thermal_transport_superionic_EMD](examples/28_thermal_transport_superionic_EMD) | Wenjiang Zhou | Thermal transport in superionic Li3PS4 using EMD. |
 | [29_thermal_transport_multicomponent_HNEMDEC](examples/29_thermal_transport_multicomponent_HNEMDEC) | Zhixin Liang | HNEMDEC method for multicomponent system. |
 | [30_Elastic_constants__strain_fluctuation_method](examples/30_Elastic_constants__strain_fluctuation_method) | Penghua Ying | Elastic constants using strain-fluctuation method. |
+| [31_Nanoribbon_friction](examples/31_Nanoribbon_friction) | Wenwu Jiang | Friction simulation for _h_-bn nanoribbon. |
