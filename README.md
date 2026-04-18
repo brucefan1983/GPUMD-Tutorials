@@ -43,3 +43,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [29_thermal_transport_multicomponent_HNEMDEC](examples/29_thermal_transport_multicomponent_HNEMDEC) | Zhixin Liang | HNEMDEC method for multicomponent system. |
 | [30_Elastic_constants__strain_fluctuation_method](examples/30_Elastic_constants__strain_fluctuation_method) | Penghua Ying | Elastic constants using strain-fluctuation method. |
 | [31_Nanoribbon_friction](examples/31_Nanoribbon_friction) | Wenwu Jiang | Friction simulation for _h_-bn nanoribbon. |
+| [32_DOAS_and_AEDP](examples/32_DOAS_and_AEDP) | Zihan Yan | Density of Atomistic States (DOAS) and Atomistic Energy Distribution Plots (AEDP) |
