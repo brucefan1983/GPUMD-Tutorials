@@ -44,3 +44,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [30_Elastic_constants__strain_fluctuation_method](examples/30_Elastic_constants__strain_fluctuation_method) | Penghua Ying | Elastic constants using strain-fluctuation method. |
 | [31_Nanoribbon_friction](examples/31_Nanoribbon_friction) | Wenwu Jiang | Friction simulation for _h_-bn nanoribbon. |
 | [32_DOAS_and_AEDP](examples/32_DOAS_and_AEDP) | Zihan Yan | Density of Atomistic States (DOAS) and Atomistic Energy Distribution Plots (AEDP) |
+| [33_deposit(Built-in Command)](examples/33_deposit) | Benrui Tang | Deposition or Formation of Ga and O Atoms on the Surface of Amorphous GaO |

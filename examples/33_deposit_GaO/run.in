@@ -1,0 +1,11 @@
+potential        nep.txt
+velocity         300
+time_step        0.5
+
+ensemble         heat_nhc 300 100 0 1 2
+fix              0
+dump_xyz         -1 0 1000 dump.xyz group
+deposit          20000 2 60 70 atom 0 20 -0.005 1 20 -0.005
+#deposit          20000 2 60 file add_Ga_O.txt -0.005
+#deposit          20000 -1 60 file add_Ga_O.txt
+run              200000
