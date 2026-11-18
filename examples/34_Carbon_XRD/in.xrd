@@ -1,0 +1,9 @@
+units metal
+atom_style atomic
+boundary p p p
+read_data atoms.data
+pair_style zero 2
+pair_coeff * *
+compute XRD all xrd 1.541838 C 2Theta 10 150 c @SPACING@ LP 1 manual
+fix powder all ave/histo/weight 1 1 1 10 100 150 c_XRD[1] c_XRD[2] mode vector file lammps-histogram.data
+run 0

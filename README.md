@@ -45,3 +45,4 @@ This repo contains various tutorials and examples using the [GPUMD package](http
 | [31_Nanoribbon_friction](examples/31_Nanoribbon_friction) | Wenwu Jiang | Friction simulation for _h_-bn nanoribbon. |
 | [32_DOAS_and_AEDP](examples/32_DOAS_and_AEDP) | Zihan Yan | Density of Atomistic States (DOAS) and Atomistic Energy Distribution Plots (AEDP) |
 | [33_deposit(Built-in Command)](examples/33_deposit) | Benrui Tang | Deposition or Formation of Ga and O Atoms on the Surface of Amorphous GaO |
+| [34_Carbon_XRD](examples/34_Carbon_XRD) | Ke Li | Calculate and validate powder X-ray diffraction patterns for carbon structures. |
