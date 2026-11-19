@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Calculate XRD for the three Fig. S6 snapshots and two crystal benchmarks."""
+"""Run GPUMD XRD for the five supplied carbon structures."""
 
 import argparse
 import csv
@@ -14,7 +14,8 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-INPUTS = ("run.in", "in.xrd", "zero.lj")
+WAVELENGTH = 1.541838
+UNIT_SCATTERERS = (0.0,) * 8 + (1.0,)
 NUMBER_OF_BINS = 150
 DENSE_GRID_NODES = 8232264
 CASES = ("diamond", "graphite", "rho-1.11", "rho-2.83", "rho-3.35")
@@ -37,27 +38,19 @@ def prepare_structure(source, work):
         gpumd.write(f'{count}\nLattice="{cell}" pbc="T T T" Properties=species:S:1:pos:R:3:vel:R:3\n')
         for atom in positions:
             gpumd.write(" ".join(atom) + " 0 0 0\n")
-    with (work / "atoms.data").open("w", encoding="ascii") as lammps:
-        lammps.write(f"{source.stem}\n\n{count} atoms\n1 atom types\n")
-        for axis, length in zip("xyz", lengths):
-            lammps.write(f"0 {length:.17g} {axis}lo {axis}hi\n")
-        lammps.write("\nMasses\n\n1 12.011\n\nAtoms # atomic\n\n")
-        for index, atom in enumerate(positions, 1):
-            lammps.write(f"{index} 1 {' '.join(atom[1:])}\n")
     return lengths
 
 
-def prepare_case(case, work):
+def prepare_case(case, work, form_factor):
     lengths = prepare_structure(HERE / "structures" / f"{case}.xyz", work)
     spacing = ((0.01,) * 3 if case.startswith("rho-")
                else tuple(1 / length for length in lengths))
     mesh = " ".join(f"{value:.17g}" for value in spacing)
-    for name in INPUTS:
-        if name == "zero.lj":
-            shutil.copyfile(HERE / name, work / name)
-        else:
-            template = (HERE / name).read_text(encoding="ascii")
-            (work / name).write_text(template.replace("@SPACING@", mesh), encoding="ascii")
+    coefficients = " ".join(f"{value:.17g}" for value in form_factor)
+    template = (HERE / "run.in").read_text(encoding="ascii")
+    command = template.replace("@SPACING@", mesh).replace("@FORM_FACTOR@", coefficients)
+    (work / "run.in").write_text(command, encoding="ascii")
+    shutil.copyfile(HERE / "zero.lj", work / "zero.lj")
 
 
 def gpumd_histogram(path, expected_nodes=None):
@@ -73,10 +66,12 @@ def gpumd_histogram(path, expected_nodes=None):
                 continue
             rows += 1
             _, _, _, angle_text, intensity = line.split()
-            angle = float(angle_text)
+            angle, value = float(angle_text), float(intensity)
+            if not math.isfinite(angle) or not math.isfinite(value) or value < 0:
+                raise ValueError("Invalid GPUMD reciprocal-point data")
             if 10 <= angle <= 100:
                 index = min(int((angle - 10) * NUMBER_OF_BINS / 90), NUMBER_OF_BINS - 1)
-                counts[index] += float(intensity)
+                counts[index] += value
     if rows != declared_nodes or (expected_nodes is not None and rows != expected_nodes):
         raise ValueError(f"Unexpected number of GPUMD rows: {rows:,}")
     total = math.fsum(counts)
@@ -85,60 +80,33 @@ def gpumd_histogram(path, expected_nodes=None):
     return [value / total for value in counts]
 
 
-def lammps_histogram(path):
-    lines = path.read_text(encoding="ascii").splitlines()
-    rows = [line.split() for line in lines[4:]]
-    if len(rows) != NUMBER_OF_BINS:
-        raise ValueError(f"Expected {NUMBER_OF_BINS} LAMMPS bins, found {len(rows)}")
-    values = [(float(row[1]), float(row[3])) for row in rows]
-    if any(not math.isfinite(value) or value < 0 for _, value in values):
-        raise ValueError("Invalid LAMMPS intensity bins")
-    return values
-
-
 def write_table(stream, rows):
     table = csv.writer(stream, delimiter="\t")
     table.writerow(COLUMNS)
     table.writerows(rows)
 
 
-def reproduce(args, cases, reference):
+def calculate(args, cases):
     gpumd = str(args.gpumd.resolve(strict=True))
-    lammps = [str(args.lammps.resolve(strict=True)), "-log", "none", "-in", "in.xrd"]
-    if args.ranks > 1:
-        if args.mpiexec is None:
-            raise SystemExit("Supply --mpiexec when using more than one MPI rank.")
-        launcher = str(args.mpiexec.resolve(strict=True))
-        lammps = [launcher, "-launcher", "fork", "-bind-to", "core", "-n", str(args.ranks), *lammps]
     env = dict(os.environ, OMP_NUM_THREADS="1")
     results = []
     for case in cases:
         density = case[4:] if case.startswith("rho-") else ""
-        expected = reference[case]
         with tempfile.TemporaryDirectory(prefix=f"xrd-{case}-", dir=args.output.parent) as temp:
             work = Path(temp)
             try:
-                prepare_case(case, work)
+                prepare_case(case, work, args.form_factor)
                 print(f"Running {case}", flush=True)
                 subprocess.run([gpumd], cwd=work, env=env, check=True)
                 gpu_bins = gpumd_histogram(work / "xrd.txt", DENSE_GRID_NODES if density else None)
-                subprocess.run(lammps, cwd=work, env=env, check=True)
-                cpu_bins = lammps_histogram(work / "lammps-histogram.data")
-                if any(float(row["two_theta_deg"]) != angle for row, (angle, _) in zip(expected, cpu_bins)):
-                    raise ValueError(f"{case}: unexpected LAMMPS bin centers")
-                ref_peak = max(float(row["paper_fraction"] or row["reference_fraction"]) for row in expected)
-                differences = []
                 current_rows = []
-                for row, gpu, (_, cpu) in zip(expected, gpu_bins, cpu_bins):
-                    ref = float(row["paper_fraction"] or row["reference_fraction"])
-                    differences.append(max(abs(gpu - ref), abs(cpu - ref), abs(gpu - cpu)))
-                    current_rows.append((case, density, row["two_theta_deg"], row["d_angstrom"],
-                                         row["paper_fraction"], row["reference_fraction"], gpu, cpu))
-                error = max(differences) / ref_peak
-                print(f"{case}: {NUMBER_OF_BINS} bins, max difference / reference peak = {error:.3g}",
-                      flush=True)
-                if error > 5e-6 or not math.isfinite(error):
-                    raise ValueError(f"{case}: the normalized spectra did not match")
+                for index, intensity in enumerate(gpu_bins):
+                    two_theta = 10 + (index + 0.5) * 90 / NUMBER_OF_BINS
+                    spacing = WAVELENGTH / (2 * math.sin(math.radians(two_theta / 2)))
+                    current_rows.append((case, density, two_theta, spacing, "", "", intensity, ""))
+                peak = max(current_rows, key=lambda row: row[6])
+                print(f"{case}: {NUMBER_OF_BINS} bins, strongest bin at "
+                      f"{peak[2]:.1f} degrees and {peak[3]:.3f} angstrom", flush=True)
             except Exception:
                 retained = work.rename(work.with_name(f"{work.name}-failed"))
                 print(f"Kept failed inputs and outputs in {retained.resolve()}", file=sys.stderr)
@@ -157,23 +125,19 @@ def reproduce(args, cases, reference):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gpumd", type=Path, required=True)
-    parser.add_argument("--lammps", type=Path, required=True)
-    parser.add_argument("--mpiexec", type=Path)
-    parser.add_argument("--ranks", type=int, default=1)
+    parser.add_argument(
+        "--form-factor", type=float, nargs=9, default=UNIT_SCATTERERS, metavar="COEFF",
+        help="Carbon coefficients a1 b1 a2 b2 a3 b3 a4 b4 c. Default: unit scatterers.")
     parser.add_argument("--case", choices=CASES, help="Run one structure. Default: run all five.")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.ranks < 1 or args.output.exists():
-        parser.error("Use positive ranks and a new output file.")
+    if not all(map(math.isfinite, args.form_factor)):
+        parser.error("--form-factor coefficients must be finite.")
+    if args.output.exists():
+        parser.error("Use a new output file.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    reference = {}
-    with (HERE / "results/xrd-reference.txt").open(newline="", encoding="ascii") as stream:
-        for row in csv.DictReader(stream, delimiter="\t"):
-            reference.setdefault(row["structure"], []).append(row)
-    if set(reference) != set(CASES) or any(len(rows) != NUMBER_OF_BINS for rows in reference.values()):
-        raise ValueError("Expected five reference curves with 150 bins each")
     cases = (args.case,) if args.case else CASES
-    values = reproduce(args, cases, reference)
+    values = calculate(args, cases)
     with args.output.open("x", newline="", encoding="ascii") as stream:
         write_table(stream, values)
     print(f"Wrote {args.output.resolve()}")
