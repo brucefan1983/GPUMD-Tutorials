@@ -15,7 +15,6 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 WAVELENGTH = 1.541838
-UNIT_SCATTERERS = (0.0,) * 8 + (1.0,)
 NUMBER_OF_BINS = 150
 DENSE_GRID_NODES = 8232264
 CASES = ("diamond", "graphite", "rho-1.11", "rho-2.83", "rho-3.35")
@@ -46,9 +45,12 @@ def prepare_case(case, work, form_factor):
     spacing = ((0.01,) * 3 if case.startswith("rho-")
                else tuple(1 / length for length in lengths))
     mesh = " ".join(f"{value:.17g}" for value in spacing)
-    coefficients = " ".join(f"{value:.17g}" for value in form_factor)
     template = (HERE / "run.in").read_text(encoding="ascii")
-    command = template.replace("@SPACING@", mesh).replace("@FORM_FACTOR@", coefficients)
+    factor_option = ""
+    if form_factor is not None:
+        shutil.copyfile(form_factor, work / "xrd_factors.txt")
+        factor_option = "form_factor xrd_factors.txt "
+    command = template.replace("@SPACING@", mesh).replace("@FORM_FACTOR@", factor_option)
     (work / "run.in").write_text(command, encoding="ascii")
     shutil.copyfile(HERE / "zero.lj", work / "zero.lj")
 
@@ -126,13 +128,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gpumd", type=Path, required=True)
     parser.add_argument(
-        "--form-factor", type=float, nargs=9, default=UNIT_SCATTERERS, metavar="COEFF",
-        help="Carbon coefficients a1 b1 a2 b2 a3 b3 a4 b4 c. Default: unit scatterers.")
+        "--form-factor", type=Path, metavar="FILE",
+        help="Custom four-Gaussian coefficient file. Default: GPUMD's built-in neutral-atom fit.")
     parser.add_argument("--case", choices=CASES, help="Run one structure. Default: run all five.")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if not all(map(math.isfinite, args.form_factor)):
-        parser.error("--form-factor coefficients must be finite.")
+    if args.form_factor is not None and not args.form_factor.is_file():
+        parser.error(f"Scattering coefficient file does not exist: {args.form_factor}")
     if args.output.exists():
         parser.error("Use a new output file.")
     args.output.parent.mkdir(parents=True, exist_ok=True)

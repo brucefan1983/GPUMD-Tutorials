@@ -1,0 +1,5 @@
+# Neutral C (RHF), Maslen, Fox and O'Keefe, International Tables for Crystallography,
+# Vol. C (2006), Table 6.1.1.4, 0 <= sin(theta)/wavelength <= 2 inverse angstroms.
+# https://onlinelibrary.wiley.com/iucr/itc/Cb/ch6o1v0001/table6o1o1o4/
+# element a1 b1 a2 b2 a3 b3 a4 b4 c
+C 2.31000 20.8439 1.02000 10.2075 1.58860 0.568700 0.865000 51.6512 0.215600

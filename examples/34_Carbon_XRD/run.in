@@ -1,5 +1,5 @@
 potential zero.lj
 ensemble nve
 time_step 0
-compute_xrd 1 1.541838 two_theta 10 150 lp 1 spacing @SPACING@ form_factor C @FORM_FACTOR@ file xrd.txt
+compute_xrd 1 1.541838 @FORM_FACTOR@two_theta 10 150 lp 1 spacing @SPACING@ file xrd.txt
 run 1

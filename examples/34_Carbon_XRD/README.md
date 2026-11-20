@@ -4,7 +4,7 @@ Calculate XRD with GPUMD for a 128-atom diamond cell, then run the same workflow
 
 ## Run diamond first
 
-Use an NVIDIA GPU and a GPUMD build whose `compute_xrd` accepts explicit `form_factor` coefficients. While [GPUMD PR #1910](https://github.com/brucefan1983/GPUMD/pull/1910) is open, use [this GPUMD commit](https://github.com/LYKD/GPUMD/tree/40b896c360f8aac18ebce638936470881e2149b4) and follow the [build instructions](https://gpumd.org/dev/installation.html). The driver uses Python 3. Plotting also needs Matplotlib.
+Use an NVIDIA GPU and a GPUMD build with built-in `compute_xrd` form factors. See [GPUMD PR #1910](https://github.com/brucefan1983/GPUMD/pull/1910) and follow the [build instructions](https://gpumd.org/dev/installation.html). The driver uses Python 3. Plotting also needs Matplotlib.
 
 Open a terminal in this example directory.
 
@@ -13,9 +13,11 @@ export GPUMD=/path/to/gpumd
 python3 run_xrd.py --gpumd "$GPUMD" --case diamond --output diamond.txt
 ```
 
-The default example assigns each atom a constant unit scattering amplitude. This is an analytic model for verifying the workflow. Diamond should show the allowed (111) peak near 44° (2.06 Å). Use `--case graphite --output graphite.txt` for graphite. A strong (002) reflection appears near 26.5° (3.36 Å).
+Diamond should show the allowed (111) peak near 44° (2.06 Å). Use `--case graphite --output graphite.txt` for graphite. A strong (002) reflection appears near 26.5° (3.36 Å).
 
-To use a physical carbon scattering model, supply its nine coefficients to `--form-factor` in the order `a1 b1 a2 b2 a3 b3 a4 b4 c`. GPUMD evaluates `c + sum(a_i exp(-b_i s^2))` with `s = sin(theta)/wavelength`. Passing `0 0 0 0 0 0 0 0 1` explicitly reproduces the unit-scatterer example. For a comparison with published intensities, use the same scattering model and calculation settings as the reference.
+The commands above use GPUMD's built-in neutral-carbon form factor. It is the five-Gaussian fit of Waasmaier and Kirfel for `s = sin(theta)/wavelength` from 0 to 6 Å⁻¹. [Original paper](https://doi.org/10.1107/S0108767394013292)
+
+To use a custom four-Gaussian fit, supply `--form-factor FILE`. Each row has the order `element a1 b1 a2 b2 a3 b3 a4 b4 c`. The supplied `--form-factor xrd_factors.txt` option selects the neutral-carbon C RHF fit used for comparison with the archived calculations, valid from 0 to 2 Å⁻¹. [International Tables for Crystallography, Vol. C, Table 6.1.1.4](https://onlinelibrary.wiley.com/iucr/itc/Cb/ch6o1v0001/table6o1o1o4/)
 
 ## Run all five structures
 
@@ -38,6 +40,6 @@ GPUMD writes raw reciprocal points to `xrd.txt` in a temporary directory. The co
 
 ## Compare with the published spectra
 
-The three amorphous structures are the final frames after 100 ps at 300 K and fixed volume. The [archived reference table](results/xrd-reference.txt) and [reference plots](results/xrd-reference.pdf) retain published Fig. S6 values and earlier calculations at the study's scattering parameters. They document the historical comparison. The analytic run above writes only its own GPUMD intensities.
+The three amorphous structures are the final frames after 100 ps at 300 K and fixed volume. The [archived reference table](results/xrd-reference.txt) and [reference plots](results/xrd-reference.pdf) retain published Fig. S6 values and earlier calculations at the study's scattering parameters. Compare the GPUMD intensities with the reference using the same scattering model and sampling settings.
 
 [Li et al., ACS Nano 20, 11284–11293 (2026)](https://doi.org/10.1021/acsnano.6c00656)
